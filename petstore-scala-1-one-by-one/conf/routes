@@ -1,0 +1,8 @@
+
+GET    /jpetstore/catalog/                  com.github.scova0731.petstore4s.step1.web.action.CatalogActionBean.main()
+POST   /jpetstore/catalog/search-product    com.github.scova0731.petstore4s.step1.web.action.CatalogActionBean.searchProducts()
+
+
+GET    /jpetstore/                  controllers.HomeController.index
+
+GET    /jpetstore/*file             controllers.Assets.at(path="/public", file)
