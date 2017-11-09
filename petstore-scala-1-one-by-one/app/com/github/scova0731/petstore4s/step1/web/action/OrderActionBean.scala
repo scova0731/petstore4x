@@ -1,18 +1,18 @@
 package com.github.scova0731.petstore4s.step1.web.action
 
-import java.util
-import java.util.{ArrayList, Collections, List}
+import javax.inject.Inject
 
+import play.api.i18n.MessagesApi
 import com.github.scova0731.petstore4s.step1.domain.Order
 import com.github.scova0731.petstore4s.step1.service.OrderService
-import net.sourceforge.stripes.action.{ForwardResolution, Resolution, SessionScope}
+import net.sourceforge.stripes.action.{ForwardResolution, Resolution}
+import com.github.scova0731.petstore4s.step1.views.html
 
 /**
   * The Class OrderActionBean.
   *
   * @author Eduardo Macarron
   */
-@SessionScope
 object OrderActionBean {
   private val CONFIRM_ORDER: String = "/WEB-INF/jsp/order/ConfirmOrder.jsp"
   private val LIST_ORDERS: String = "/WEB-INF/jsp/order/ListOrders.jsp"
@@ -23,11 +23,12 @@ object OrderActionBean {
   private val CARD_TYPE_LIST = Seq("Visa", "MasterCard", "American Express")
 }
 
-@SessionScope
-@SerialVersionUID(-6171288227470176272L)
-class OrderActionBean extends AbstractActionBean {
+class OrderActionBean @Inject()(
+  orderService: OrderService,
+  override val messagesApi: MessagesApi
+) extends AbstractActionBean {
 //  @SpringBean 
-  private val orderService: OrderService = null
+//  private val orderService: OrderService = null
   private var order: Order = null //new Order
   private var shippingAddressRequired: Boolean = false
   private var confirmed: Boolean = false
@@ -78,23 +79,57 @@ class OrderActionBean extends AbstractActionBean {
     *
     * @return the resolution
     */
-  def newOrderForm: Resolution = {
-    val session = context.getRequest.getSession
-    val accountBean: AccountActionBean = session.getAttribute("/actions/Account.action").asInstanceOf[AccountActionBean]
-    val cartBean: CartActionBean = session.getAttribute("/actions/Cart.action").asInstanceOf[CartActionBean]
-    clear()
-    if (accountBean == null || !accountBean.isAuthenticated) {
-      setMessage("You must sign on before attempting to check out.  Please sign on and try checking out again.")
-      new ForwardResolution(classOf[AccountActionBean])
+//  def newOrderForm: Resolution = {
+//    val session = context.getRequest.getSession
+//    val accountBean: AccountActionBean = session.getAttribute("/actions/Account.action").asInstanceOf[AccountActionBean]
+//    val cartBean: CartActionBean = session.getAttribute("/actions/Cart.action").asInstanceOf[CartActionBean]
+//    clear()
+//    if (accountBean == null || !accountBean.isAuthenticated) {
+//      setMessage("You must sign on before attempting to check out.  Please sign on and try checking out again.")
+//      new ForwardResolution(classOf[AccountActionBean])
+//    }
+//    else if (cartBean != null) {
+////      order.initOrder(accountBean.getAccount, cartBean.getCart)
+//      new ForwardResolution(OrderActionBean.NEW_ORDER)
+//    }
+//    else {
+//      setMessage("An order could not be created because a cart could not be found.")
+//      new ForwardResolution(ERROR)
+//    }
+//  }
+
+
+  def newOrderForm() = Action { implicit req =>
+//    val session = context.getRequest.getSession
+//    val accountBean: AccountActionBean = session.getAttribute("/actions/Account.action").asInstanceOf[AccountActionBean]
+//    val cartBean: CartActionBean = session.getAttribute("/actions/Cart.action").asInstanceOf[CartActionBean]
+//    clear()
+    val cart = extractOrNewCart()
+
+    if (!req.session.get("accountBean_authenticated").contains("true")) {
+      // TODO error ではない。。
+      renderError("You must sign on before attempting to check out.  Please sign on and try checking out again.")
+      //      new ForwardResolution(classOf[AccountActionBean])
+      // TODO Redirect to sign-in
+    } else if (cart.nonEmpty) {
+      Ok
+    } else {
+      renderError("An order could not be created because a cart could not be found.")
     }
-    else if (cartBean != null) {
-      order.initOrder(accountBean.getAccount, cartBean.getCart)
-      new ForwardResolution(OrderActionBean.NEW_ORDER)
-    }
-    else {
-      setMessage("An order could not be created because a cart could not be found.")
-      new ForwardResolution(ERROR)
-    }
+
+
+//    if (accountBean == null || !accountBean.isAuthenticated) {
+//      setMessage("You must sign on before attempting to check out.  Please sign on and try checking out again.")
+//      new ForwardResolution(classOf[AccountActionBean])
+//    }
+//    else if (cartBean != null) {
+//      //      order.initOrder(accountBean.getAccount, cartBean.getCart)
+//      new ForwardResolution(OrderActionBean.NEW_ORDER)
+//    }
+//    else {
+//      setMessage("An order could not be created because a cart could not be found.")
+//      new ForwardResolution(ERROR)
+//    }
   }
 
   /**
@@ -112,7 +147,7 @@ class OrderActionBean extends AbstractActionBean {
     else if (getOrder != null) {
       orderService.insertOrder(order)
       val cartBean: CartActionBean = session.getAttribute("/actions/Cart.action").asInstanceOf[CartActionBean]
-      cartBean.clear()
+//      cartBean.clear()
       setMessage("Thank you, your order has been submitted.")
       new ForwardResolution(OrderActionBean.VIEW_ORDER)
     }

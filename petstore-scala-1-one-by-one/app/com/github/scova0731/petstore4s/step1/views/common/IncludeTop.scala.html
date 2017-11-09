@@ -52,7 +52,7 @@
 			</div>
 
 			<div id="Menu">
-				<div id="MenuContent"><a href="../cart/cart">
+				<div id="MenuContent"><a href="../cart/">
 					<img align="middle" name="img_cart" src="../images/cart.gif" />
 				</a>
 					<img align="middle" src="../images/separator.gif" />
@@ -66,7 +66,7 @@
 					@*</c:if>*@
 					@*<c:if test="${sessionScope.accountBean != null}">*@
 						@*<c:if test="${!sessionScope.accountBean.authenticated}">*@
-							@if(!session.get("accountBean_authenticated").contains("true")) {
+							@if(session.get("accountBean").isDefined && !session.get("accountBean_authenticated").contains("true")) {
 								<a href="../account/signon-form">
 									Sign In
 								</a>
@@ -118,4 +118,5 @@
 
 		</div>
 
-		<div id="Content"><stripes:messages />
+		<div id="Content">
+			@*<stripes:messages />*@

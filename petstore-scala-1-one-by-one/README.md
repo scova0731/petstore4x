@@ -37,6 +37,10 @@ beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean"
  -> ../catalog/
 beanclass="org.mybatis.jpetstore.web.actions.CartActionBean" event="viewCart" 
   -> ../cart/cart
+beanclass="org.mybatis.jpetstore.web.actions.CartActionBean" event="addItemToCart" 
+  -> ../cart/add-item?itemId=  (TODO まさかのGETでのカート操作)
+beanclass="org.mybatis.jpetstore.web.actions.CartActionBean" event="removeItemFromCart"
+  -> ../cart/remove-item?itemId=  (TODO まさかのGETでのカート操作)
 beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean" event="signonForm"
   -> ../account/signon-form 
 beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean" event="signoff"
@@ -44,20 +48,26 @@ beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean" event="signoff"
 beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean" event="editAccountForm"
   -> ../account/edit-account-form
 beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean" event="viewCategory"
-  -> ../catalog/view-category    
+  -> ../catalog/view-category?categoryId=    
     <stripes:param name="categoryId" value="FISH" />
     <stripes:param name="categoryId" value="DOGS" />
     <stripes:param name="categoryId" value="REPTILES" />
     <stripes:param name="categoryId" value="CATS" />
     <stripes:param name="categoryId" value="BIRDS" />
 beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean" event="viewProduct"
-  -> ../catalog/view-product
+  -> ../catalog/view-product?productId=
+beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean" event="viewItem"
+  -> ../catalog/view-item?itemId=
+beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean" event="newOrderForm"
+  -> ../order/checkout
     
 # TODO - sessionScope っぽいもの
 "accountBean" = "true"
 "accountBean_authenticated" = "true"
 "accountBean_account_bannerOption"
 "accountBean_account_bannerName"
+"accountBean_account_firstName"
+"accountBean_account_listOption"
 
     
 # TODO
@@ -116,20 +126,26 @@ MyBatisModuleを再構成する
 │   ├─[ ] NewAccountForm.scala.html
 │   └─[ ] SignonForm.scala.html
 ├── cart
-│   ├─[ ] Cart.scala.html
+│   ├─[x] Cart.scala.html
 │   ├─[ ] Checkout.scala.html
 │   └─[ ] IncludeMyList.scala.html
 ├── catalog
-│   ├─[ ] Category.scala.html
-│   ├─[ ] Item.scala.html
-│   ├─[ ] Main.scala.html 次
-│   ├─[ ] Product.scala.html
+│   ├─[x] Category.scala.html
+│   ├─[x] Item.scala.html
+│   ├─[x] Main.scala.html
+│   ├─[x] Product.scala.html
 │   └─[x] SearchProducts.scala.html
-└── common
-    ├─[ ] Error.scala.html
-    ├─[x] IncludeBottom.scala.html
-    └─[ ] IncludeTop.scala.html
-        <stripes:messages />
+├── common
+│   ├─[x] Error.scala.html
+│   ├─[x] IncludeBottom.scala.html
+│   └─[x] IncludeTop.scala.html
+│       <stripes:messages /> ... 消しちゃったけど、、、エラーでないときにつかう？
+└── order
+    ├─[ ] ConfirmOrder.scala.html
+    ├─[ ] ListOrders.scala.html
+    ├─[ ] NewOrderForm.scala.html
+    ├─[ ] ShippingForm.scala.html
+    └─[ ] ViewOrder.scala.html
         
 
 # 改めてインストール

@@ -15,37 +15,53 @@
        @*limitations under the License.*@
 
 @*--%>*@
+@import com.github.scova0731.petstore4s.step1.domain.Category
+@import com.github.scova0731.petstore4s.step1.domain.Product
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 
-@(session: Session)(implicit messages: Messages)
+@(session: Session, products: Seq[Product], category: Category)(implicit messages: Messages)
 
 @IncludeTop(session)
 
-<div id="BackLink"><stripes:link
-	beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean">
-	Return to Main Menu</stripes:link></div>
+<div id="BackLink">
+	@*<stripes:link*@
+	@*beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean">*@
+	@*Return to Main Menu</stripes:link>*@
+	<a href="../catalog/">Return to Main Menu</a>
+</div>
 
 <div id="Catalog">
 
-<h2>${actionBean.category.name}</h2>
+<h2>
+	@*${actionBean.category.name}*@
+	@category.name
+</h2>
 
 <table>
 	<tr>
 		<th>Product ID</th>
 		<th>Name</th>
 	</tr>
-	<c:forEach var="product" items="${actionBean.productList}">
+	@*<c:forEach var="product" items="${actionBean.productList}">*@
+		@*<tr>*@
+			@*<td><stripes:link*@
+				@*beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean"*@
+				@*event="viewProduct">*@
+				@*<stripes:param name="productId" value="${product.productId}" />*@
+				@*${product.productId}*@
+			@*</stripes:link></td>*@
+			@*<td>${product.name}</td>*@
+		@*</tr>*@
+	@*</c:forEach>*@
+	@for(product <- products) {
 		<tr>
-			<td><stripes:link
-				beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean"
-				event="viewProduct">
-				<stripes:param name="productId" value="${product.productId}" />
-				${product.productId}
-			</stripes:link></td>
-			<td>${product.name}</td>
+			<td>
+				<a href="../catalog/view-product?productId=@product.productId">@product.productId</a>
+			</td>
+			<td>@product.name</td>
 		</tr>
-	</c:forEach>
+	}
 </table>
 
 </div>

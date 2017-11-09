@@ -2,29 +2,35 @@ package com.github.scova0731.petstore4s.step1.domain
 
 import java.util
 
+import play.api.libs.json.Json
+
 
 /**
   * The Class Cart.
   *
   */
 case class Cart(
-  itemMap2: Map[String, CartItem],
-  itemList2: List[CartItem]
+  items: Seq[CartItem] = Seq.empty,
+
+  @deprecated("Use items instead")
+  itemMap2: Map[String, CartItem] = Map.empty,
+  @deprecated("Use items instead")
+  itemList2: List[CartItem] = List.empty
 ) {
 
+  val isEmpty = items.isEmpty
+  val nonEmpty = items.nonEmpty
+
+  @deprecated("Use items instead")
   private val itemMap = new java.util.concurrent.ConcurrentHashMap[String, CartItem]
+  @deprecated("Use items instead")
   private val itemList = new util.ArrayList[CartItem]
 
-  def getCartItems: util.Iterator[CartItem] = itemList.iterator
-
-  def getCartItemList: util.List[CartItem] = itemList
-
-  def getNumberOfItems: Int = itemList.size
-  lazy val getNumberOfItems2: Int = itemList2.size
 
   def getAllCartItems: util.Iterator[CartItem] = itemList.iterator
 
-  def containsItemId(itemId: String): Boolean = itemMap.containsKey(itemId)
+  def containsItemId(itemId: String): Boolean =
+    items.exists(_.item.itemId == itemId)
 
   /**
     * Adds the item.
@@ -32,18 +38,29 @@ case class Cart(
     * @param item      the item
     * @param isInStock the is in stock
     */
-  def addItem(item: Item, isInStock: Boolean): Unit = {
-    var cartItem = itemMap.get(item.itemId)
-    if (cartItem == null) {
-      cartItem = CartItem(
-        item = item,
-        quantity = 0,
-        inStock = isInStock
-      )
-      itemMap.put(item.itemId, cartItem)
-      itemList.add(cartItem)
-    }
-    cartItem.incrementQuantity()
+  def addItem(item: Item, isInStock: Boolean): Cart = {
+    val newItem = items
+      .find(_.item.itemId == item.itemId)
+      .getOrElse(CartItem(
+          item = item,
+          inStock = isInStock
+        ))
+      .incrementQuantity()
+
+    replaceItem(newItem)
+  }
+
+  // TODO どうにかしたい。マップを併用するのか？
+  private def replaceItem(newItem: CartItem): Cart = {
+    if (items.exists(_.item.itemId == newItem.item.itemId))
+      Cart(items.map(ci =>
+        if (ci.item.itemId == newItem.item.itemId)
+          newItem
+        else
+          ci
+      ))
+    else
+      Cart(items :+ newItem)
   }
 
   /**
@@ -52,13 +69,11 @@ case class Cart(
     * @param itemId the item id
     * @return the item
     */
-  def removeItemById(itemId: String): Item = {
-    val cartItem = itemMap.remove(itemId)
-    if (cartItem == null) null
-    else {
-      itemList.remove(cartItem)
-      cartItem.item
-    }
+  def removeItemById(itemId: String): Option[Cart] = {
+    if (items.exists(_.item.itemId == itemId))
+      Some(Cart(items.filter(_.item.itemId != itemId)))
+    else
+      None
   }
 
   /**
@@ -66,24 +81,23 @@ case class Cart(
     *
     * @param itemId the item id
     */
-  def incrementQuantityByItemId(itemId: String): Unit = {
-    val cartItem = itemMap.get(itemId)
-    cartItem.incrementQuantity()
+  def incrementQuantityByItemId(itemId: String): Cart = {
+    Cart(items.map { ci =>
+      if (ci.item.itemId == itemId)
+        ci.incrementQuantity()
+      else
+        ci
+    })
   }
 
-  def setQuantityByItemId(itemId: String, quantity: Int): Unit = {
-    val cartItem = itemMap.get(itemId)
-    cartItem.setQuantity(quantity)
-  }
+  def setQuantityByItemId(itemId: String, quantity: Int): Cart = {
+    Cart(items.map { ci =>
+      if (ci.item.itemId == itemId)
+        ci.setQuantity(quantity)
+      else
+        ci
+    })
 
-  // immutable version
-  def setQuantityByItemId2(itemId: String, quantity: Int): Map[String, CartItem] = {
-    itemMap2
-      .get(itemId)
-      .map{ item =>
-        itemMap2.updated(itemId, item.setQuantity(quantity))
-      }
-      .getOrElse(itemMap2)
   }
 
   /**
@@ -91,7 +105,8 @@ case class Cart(
     *
     * @return the sub total
     */
-  def getSubTotal: BigDecimal = {
+  // TODO rewrite this one
+  def subTotal: BigDecimal = {
     var subTotal = BigDecimal(0)
     val items = getAllCartItems
     while ( {
@@ -105,4 +120,17 @@ case class Cart(
     }
     subTotal
   }
+}
+
+object Cart {
+
+  /**
+    * JSON deserializer for session cache
+    */
+  implicit val reads = Json.reads[Cart]
+
+  /**
+    * JSON serializer for session cache
+    */
+  implicit val writes = Json.writes[Cart]
 }

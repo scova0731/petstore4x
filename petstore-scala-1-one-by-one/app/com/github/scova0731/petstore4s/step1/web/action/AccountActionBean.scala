@@ -1,5 +1,8 @@
 package com.github.scova0731.petstore4s.step1.web.action
 
+import javax.inject.Inject
+
+import play.api.i18n.MessagesApi
 import com.github.scova0731.petstore4s.step1.domain.Account
 import com.github.scova0731.petstore4s.step1.service.{AccountService, CatalogService}
 import net.sourceforge.stripes.action.{ForwardResolution, RedirectResolution, Resolution, SessionScope}
@@ -21,9 +24,13 @@ object AccountActionBean {
 }
 
 @SessionScope
-class AccountActionBean extends AbstractActionBean {
-  private val accountService: AccountService = null
-  private val catalogService: CatalogService = null
+class AccountActionBean @Inject()(
+  accountService: AccountService,
+  catalogService: CatalogService,
+  override val messagesApi: MessagesApi
+) extends AbstractActionBean {
+//  private val accountService: AccountService = null
+//  private val catalogService: CatalogService = null
   private var account: Account = null //new Account
   private var myList: Seq[Product] = null
   private var authenticated: Boolean = false

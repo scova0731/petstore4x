@@ -24,6 +24,12 @@ class MyBatisModule extends org.mybatis.guice.MyBatisModule {
     bindTransactionFactoryType(classOf[JdbcTransactionFactory])
     addMapperClasses("com.github.scova0731.petstore4s.step1.mapper")
 
+    // Disable cache currently to escape from deserializing issue of case class
+    // [PersistenceException:
+    //   ### Error querying database.  Cause: org.apache.ibatis.cache.CacheException: Error deserializing object.  Cause: java.lang.ClassNotFoundException: Cannot find class: com.github.scova0731.petstore4s.step1.domain.Product
+    //   ### Cause: org.apache.ibatis.cache.CacheException: Error deserializing object.  Cause: java.lang.ClassNotFoundException: Cannot find class: com.github.scova0731.petstore4s.step1.domain.Product]
+    useCacheEnabled(false)
+
     Logger.info("MyBatisModule is initialized now.")
   }
 

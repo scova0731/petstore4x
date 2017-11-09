@@ -39,9 +39,12 @@ class CatalogService @Inject()(
     }.toList
   }
 
-  def getItemListByProduct(productId: String): List[Item] = itemMapper.getItemListByProduct(productId)
+  def getItemListByProduct(productId: String): List[Item] =
+    itemMapper.getItemListByProduct(productId).asScala.toList
 
-  def getItem(itemId: String): Item = itemMapper.getItem(itemId)
+  def getItem(itemId: String): Item =
+    itemMapper.getItem(itemId)
 
-  def isItemInStock(itemId: String): Boolean = itemMapper.getInventoryQuantity(itemId) > 0
+  def isItemInStock(itemId: String): Boolean =
+    itemMapper.getInventoryQuantity(itemId) > 0
 }

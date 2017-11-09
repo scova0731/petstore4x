@@ -62,7 +62,7 @@ case class Order(
     billState = account.state
     billZip = account.zip
     billCountry = account.country
-    totalPrice = cart.getSubTotal
+    totalPrice = cart.subTotal
     creditCard = "999 9999 9999 9999"
     expiryDate = "12/03"
     cardType = "Visa"

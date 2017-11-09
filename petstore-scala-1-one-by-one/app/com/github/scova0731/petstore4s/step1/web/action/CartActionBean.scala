@@ -1,54 +1,63 @@
 package com.github.scova0731.petstore4s.step1.web.action
 
-import java.util.Iterator
+import javax.inject.Inject
 
-import com.github.scova0731.petstore4s.step1.domain.{Cart, CartItem, Item}
+import play.api.data.Forms._
+import play.api.data._
+import play.api.i18n.MessagesApi
+
 import com.github.scova0731.petstore4s.step1.service.CatalogService
-import net.sourceforge.stripes.action.{ForwardResolution, Resolution, SessionScope}
+import com.github.scova0731.petstore4s.step1.views.html
 
 /**
   * The Class CartActionBean.
   *
   * @author Eduardo Macarron
   */
-@SessionScope
 object CartActionBean {
-  private val VIEW_CART: String = "/WEB-INF/jsp/cart/Cart.jsp"
-  private val CHECK_OUT: String = "/WEB-INF/jsp/cart/Checkout.jsp"
+
+  case class CartQuantityUpdate(
+    keys: List[String],
+    values: List[Int]
+  ) {
+
+    def list: List[(String, Int)] = keys.zip(values)
+  }
+
+  val quantityForm = Form(
+    mapping(
+      "keys" -> list(text),
+      "values" -> list(number)
+    )(CartQuantityUpdate.apply)(CartQuantityUpdate.unapply)
+  )
+
 }
 
-@SessionScope
-class CartActionBean extends AbstractActionBean {
-//  @SpringBean
-  private val catalogService: CatalogService = null
-  private var cart: Cart = null //new Cart
-  private var workingItemId: String = null
+class CartActionBean @Inject()(
+  catalogService: CatalogService,
+  override val messagesApi: MessagesApi
+) extends AbstractActionBean {
 
-  def getCart: Cart = cart
-
-  def setCart(cart: Cart): Unit = {
-    this.cart = cart
-  }
-
-  def setWorkingItemId(workingItemId: String): Unit = {
-    this.workingItemId = workingItemId
-  }
+  import CartActionBean._
 
   /**
     * Adds the item to cart.
     *
     * @return the resolution
     */
-  def addItemToCart: Resolution = {
-    if (cart.containsItemId(workingItemId)) cart.incrementQuantityByItemId(workingItemId)
-    else { // isInStock is a "real-time" property that must be updated
-      // every time an item is added to the cart, even if other
-      // item details are cached.
-      val isInStock: Boolean = catalogService.isItemInStock(workingItemId)
-      val item: Item = catalogService.getItem(workingItemId)
-      cart.addItem(item, isInStock)
-    }
-    new ForwardResolution(CartActionBean.VIEW_CART)
+  def addItemToCart(itemId: String) = Action { implicit req =>
+    val cart = extractOrNewCart()
+
+    val newCart =
+      if (cart.containsItemId(itemId))
+        cart.incrementQuantityByItemId(itemId)
+      else {
+        val isInStock = catalogService.isItemInStock(itemId)
+        val item = catalogService.getItem(itemId)
+        cart.addItem(item, isInStock)
+      }
+
+    Ok(html.cart.Cart(newCart)).withSession(withCart(newCart))
   }
 
   /**
@@ -56,13 +65,15 @@ class CartActionBean extends AbstractActionBean {
     *
     * @return the resolution
     */
-  def removeItemFromCart: Resolution = {
-    val item: Item = cart.removeItemById(workingItemId)
-    if (item == null) {
-      setMessage("Attempted to remove null CartItem from Cart.")
-      new ForwardResolution(ERROR)
+  def removeItemFromCart(itemId: String) = Action { implicit req =>
+    val cart = extractOrNewCart()
+
+    cart.removeItemById(itemId) match {
+      case Some(newCart) =>
+          Ok(html.cart.Cart(newCart)).withSession(withCart(newCart))
+      case None =>
+        renderError("Attempted to remove null CartItem from Cart.")
     }
-    else new ForwardResolution(CartActionBean.VIEW_CART)
   }
 
   /**
@@ -70,33 +81,31 @@ class CartActionBean extends AbstractActionBean {
     *
     * @return the resolution
     */
-  def updateCartQuantities: Resolution = {
-    val request = context.getRequest
-    val cartItems: Iterator[CartItem] = getCart.getAllCartItems
-    while ( {
-      cartItems.hasNext
-    }) {
-      val cartItem: CartItem = cartItems.next
-      val itemId: String = cartItem.item.itemId
-      try {
-        val quantity: Int = request.getParameter(itemId).toInt
-        getCart.setQuantityByItemId(itemId, quantity)
-        if (quantity < 1) cartItems.remove()
-      } catch {
-        case e: Exception =>
+  def updateCartQuantities() = Action { implicit req =>
+    val cart = extractOrNewCart()
 
-        //ignore parse exceptions on purpose
+    quantityForm.bindFromRequest.fold(
+      _ => {
+        renderError("Hmm, form cannot be parsed.")
+      },
+      data => {
+        req.body.asFormUrlEncoded.foreach(println)
+        println(data)
+        val newCart = data.list.foldLeft(cart) { case (cart, (itemId, quantity)) =>
+          if (quantity >=1)
+            cart.setQuantityByItemId(itemId, quantity)
+          else
+            cart.removeItemById(itemId).getOrElse(cart)
+        }
+        Ok(html.cart.Cart(newCart)).withSession(withCart(newCart))
       }
-    }
-    new ForwardResolution(CartActionBean.VIEW_CART)
+    )
   }
 
-  def viewCart: ForwardResolution = new ForwardResolution(CartActionBean.VIEW_CART)
-
-  def checkOut: ForwardResolution = new ForwardResolution(CartActionBean.CHECK_OUT)
-
-  def clear(): Unit = {
-    cart = null //new Cart
-    workingItemId = null
+  def viewCart() = Action { implicit req =>
+    Ok(html.cart.Cart(extractOrNewCart()))
   }
+
+//  def checkOut: ForwardResolution = new ForwardResolution(CartActionBean.CHECK_OUT)
+
 }
