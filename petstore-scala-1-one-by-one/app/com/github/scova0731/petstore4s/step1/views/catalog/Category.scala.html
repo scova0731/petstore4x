@@ -20,9 +20,9 @@
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 
-@(session: Session, products: Seq[Product], category: Category)(implicit messages: Messages)
+@(products: Seq[Product], category: Category)(implicit messages: Messages, session: Session, flash: Flash)
 
-@IncludeTop(session)
+@IncludeTop()
 
 <div id="BackLink">
 	@*<stripes:link*@
@@ -66,5 +66,5 @@
 
 </div>
 
-@IncludeBottom(session)
+@IncludeBottom()
 

@@ -18,9 +18,9 @@
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 
-@(session: Session)(implicit messages: Messages)
+@()(implicit messages: Messages, session: Session, flash: Flash)
 
-@IncludeTop(session)
+@IncludeTop()
 
 <div id="BackLink"><stripes:link
 	beanclass="org.mybatis.jpetstore.web.actions.CartActionBean">
@@ -78,4 +78,4 @@
 
 </div>
 
-@IncludeBottom(session)
+@IncludeBottom()

@@ -18,9 +18,9 @@
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 
-@(session: Session)(implicit messages: Messages)
+@()(implicit messages: Messages, session: Session, flash: Flash)
 
-@IncludeTop(session)
+@IncludeTop()
 
 <h2>My Orders</h2>
 
@@ -47,6 +47,6 @@
 	</c:forEach>
 </table>
 
-@IncludeBottom(session)
+@IncludeBottom()
 
 

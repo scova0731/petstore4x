@@ -18,7 +18,7 @@
 
 @import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@(session: Session)(implicit messages: Messages)
+@()(implicit messages: Messages, session: Session, flash: Flash)
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -67,6 +67,7 @@
 					@*<c:if test="${sessionScope.accountBean != null}">*@
 						@*<c:if test="${!sessionScope.accountBean.authenticated}">*@
 							@if(session.get("accountBean").isDefined && !session.get("accountBean_authenticated").contains("true")) {
+
 								<a href="../account/signon-form">
 									Sign In
 								</a>
@@ -119,4 +120,8 @@
 		</div>
 
 		<div id="Content">
+			@flash.get("message").map { msg =>
+				<div>@msg</div>
+			}.getOrElse("")
+
 			@*<stripes:messages />*@

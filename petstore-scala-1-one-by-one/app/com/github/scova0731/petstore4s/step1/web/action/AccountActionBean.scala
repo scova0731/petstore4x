@@ -2,18 +2,21 @@ package com.github.scova0731.petstore4s.step1.web.action
 
 import javax.inject.Inject
 
+import play.api.data.Forms._
+import play.api.data._
 import play.api.i18n.MessagesApi
 import com.github.scova0731.petstore4s.step1.domain.Account
 import com.github.scova0731.petstore4s.step1.service.{AccountService, CatalogService}
 import net.sourceforge.stripes.action.{ForwardResolution, RedirectResolution, Resolution, SessionScope}
+import com.github.scova0731.petstore4s.step1.views.html
 
 /**
   * The Class AccountActionBean.
   *
   * @author Eduardo Macarron
   */
-@SessionScope
-@SerialVersionUID(5499663666155758178L)
+//@SessionScope
+//@SerialVersionUID(5499663666155758178L)
 object AccountActionBean {
   private val NEW_ACCOUNT: String = "/WEB-INF/jsp/account/NewAccountForm.jsp"
   private val EDIT_ACCOUNT: String = "/WEB-INF/jsp/account/EditAccountForm.jsp"
@@ -21,14 +24,25 @@ object AccountActionBean {
   private val LANGUAGE_LIST: Seq[String] = Seq("english", "japanese")
   private val CATEGORY_LIST: Seq[String] = Seq("FISH", "DOGS", "REPTILES", "CATS", "BIRDS")
 
+  case class LogonForm(username: String, password: String)
+
+  val logonForm = Form(
+    mapping(
+      "username" -> nonEmptyText,
+      "password" -> nonEmptyText
+    )(LogonForm.apply)(LogonForm.unapply)
+  )
 }
 
-@SessionScope
+//@SessionScope
 class AccountActionBean @Inject()(
   accountService: AccountService,
   catalogService: CatalogService,
   override val messagesApi: MessagesApi
 ) extends AbstractActionBean {
+
+  import AccountActionBean._
+
 //  private val accountService: AccountService = null
 //  private val catalogService: CatalogService = null
   private var account: Account = null //new Account
@@ -44,12 +58,12 @@ class AccountActionBean @Inject()(
 //    account.setUsername(username)
   }
 
-  def getPassword: String = account.password
+//  def getPassword: String = account.password
 
 //  @Validate(required = true, on = Array(Array("signon", "newAccount", "editAccount")))
-  def setPassword(password: String): Unit = {
+//  def setPassword(password: String): Unit = {
 //    account.setPassword(password)
-  }
+//  }
 
   def getMyList: Seq[Product] = myList
 
@@ -81,18 +95,30 @@ class AccountActionBean @Inject()(
     *
     * @return the resolution
     */
-  def editAccountForm: Resolution = new ForwardResolution(AccountActionBean.EDIT_ACCOUNT)
+//  def editAccountForm: Resolution = new ForwardResolution(AccountActionBean.EDIT_ACCOUNT)
+
+  def editAccountForm() = Action { implicit req =>
+    val account = extractAccount().get
+
+    Ok(html.account.EditAccountForm(account))
+  }
+
 
   /**
     * Edits the account.
     *
     * @return the resolution
     */
-  def editAccount: Resolution = {
+  def editAccount0: Resolution = {
     accountService.updateAccount(account)
     account = accountService.getAccount(account.username)
     myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
     new RedirectResolution(classOf[CatalogActionBean])
+  }
+
+  def editAccount() = Action { implicit req =>
+    Ok
+
   }
 
   /**
@@ -101,30 +127,56 @@ class AccountActionBean @Inject()(
     * @return the resolution
     */
   //  @DefaultHandler
-  def signonForm: Resolution = new ForwardResolution(AccountActionBean.SIGNON)
+//  def signonForm: Resolution = new ForwardResolution(AccountActionBean.SIGNON)
+
+  def signonForm() = Action { implicit req =>
+
+    Ok(html.account.SignonForm())
+  }
 
   /**
     * Signon.
     *
     * @return the resolution
     */
-  def signon: Resolution = {
-    account = accountService.getAccount(getUsername, getPassword)
-    if (account == null) {
-      val value: String = "Invalid username or password.  Signon failed."
-      setMessage(value)
-      clear()
-      new ForwardResolution(AccountActionBean.SIGNON)
-    }
-    else {
-      // account.setPassword(null)
-      myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
-      authenticated = true
-      val s = context.getRequest.getSession
-      // this bean is already registered as /actions/Account.action
-      s.setAttribute("accountBean", this)
-      new RedirectResolution(classOf[CatalogActionBean])
-    }
+//  def signon: Resolution = {
+//    account = accountService.getAccount(getUsername, getPassword)
+//    if (account == null) {
+//      val value: String = "Invalid username or password.  Signon failed."
+//      setMessage(value)
+//      clear()
+//      new ForwardResolution(AccountActionBean.SIGNON)
+//    }
+//    else {
+//      // account.setPassword(null)
+//      myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
+//      authenticated = true
+//      val s = context.getRequest.getSession
+//      // this bean is already registered as /actions/Account.action
+//      s.setAttribute("accountBean", this)
+//      new RedirectResolution(classOf[CatalogActionBean])
+//    }
+//  }
+
+  def signon() = Action { implicit req =>
+    logonForm.bindFromRequest().fold(
+      _ =>
+        Ok(html.account.SignonForm())
+          .flashing("message"->"Invalid username or password.  Signon failed."),
+
+      form => {
+        accountService.getAccount(form.username, form.password) match {
+          case Some(account) =>
+            val myList = catalogService.getProductListByCategory(account.favouriteCategoryId) // TODO これはなに？
+            Redirect(routes.CatalogActionBean.main())
+              .addingToSession(withAccount(account):_*)
+
+          case None =>
+            Ok(html.account.SignonForm())
+              .flashing("message"->"Invalid username or password.  Signon failed.")
+        }
+      }
+    )
   }
 
   /**
@@ -132,25 +184,31 @@ class AccountActionBean @Inject()(
     *
     * @return the resolution
     */
-  def signoff: Resolution = {
-    context.getRequest.getSession.invalidate()
-    clear()
-    new RedirectResolution(classOf[CatalogActionBean])
+//  def signoff: Resolution = {
+//    context.getRequest.getSession.invalidate()
+//    clear()
+//    new RedirectResolution(classOf[CatalogActionBean])
+//  }
+
+  def signoff() = Action { implicit req =>
+
+    Redirect(routes.CatalogActionBean.main())
+      .removingFromSession(accountKeys:_*)
   }
 
-  /**
-    * Checks if is authenticated.
-    *
-    * @return true, if is authenticated
-    */
-  def isAuthenticated: Boolean = authenticated && account != null && account.username != null
+//  /**
+//    * Checks if is authenticated.
+//    *
+//    * @return true, if is authenticated
+//    */
+//  def isAuthenticated: Boolean = authenticated && account != null && account.username != null
 
-  /**
-    * Clear.
-    */
-  def clear(): Unit = {
-    account = null //new Account
-    myList = null
-    authenticated = false
-  }
+//  /**
+//    * Clear.
+//    */
+//  def clear(): Unit = {
+//    account = null //new Account
+//    myList = null
+//    authenticated = false
+//  }
 }

@@ -21,9 +21,9 @@
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 
-@(session: Session, items: Seq[Item], product: Product)(implicit messages: Messages)
+@(items: Seq[Item], product: Product)(implicit messages: Messages, session: Session, flash: Flash)
 
-@IncludeTop(session)
+@IncludeTop()
 
 @*<jsp:useBean id="catalog"*@
 	@*class="org.mybatis.jpetstore.web.actions.CatalogActionBean" />*@
@@ -103,7 +103,7 @@
 
 </div>
 
-@IncludeBottom(session)
+@IncludeBottom()
 
 
 

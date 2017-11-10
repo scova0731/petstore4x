@@ -16,7 +16,7 @@
 
 @*--%>*@
 
-@(session: Session)(implicit messages: Messages)
+@()(implicit messages: Messages, session: Session, flash: Flash)
 
 </div>
 
@@ -36,7 +36,7 @@
 		@*</c:if>*@
 	@*</c:if>*@
 	@if(session.get("accountBean_authenticated").contains("true")) {
-		session.get("accountBean_account_bannerName").get
+		@Html(session.get("accountBean_account_bannerName").get)
 	}
 </div>
 

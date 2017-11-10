@@ -8,6 +8,7 @@ import play.api.i18n.MessagesApi
 
 import com.github.scova0731.petstore4s.step1.service.CatalogService
 import com.github.scova0731.petstore4s.step1.views.html
+import com.github.scova0731.petstore4s.step1.web.action.routes
 
 
 /**
@@ -36,8 +37,8 @@ class CatalogActionBean @Inject()(
   /**
     * at DefaultHandler
     */
-  def main = Action { req =>
-    Ok(html.catalog.Main(req.session))
+  def main = Action { implicit req =>
+    Ok(html.catalog.Main())
   }
 
   /**
@@ -47,7 +48,7 @@ class CatalogActionBean @Inject()(
     val productList = catalogService.getProductListByCategory(categoryId)
     val category = catalogService.getCategory(categoryId)
 
-    Ok(html.catalog.Category(req.session, productList, category))
+    Ok(html.catalog.Category(productList, category))
   }
 
   /**
@@ -57,7 +58,7 @@ class CatalogActionBean @Inject()(
     val itemList = catalogService.getItemListByProduct(productId)
     val product = catalogService.getProduct(productId)
 
-    Ok(html.catalog.Product(req.session, itemList, product))
+    Ok(html.catalog.Product(itemList, product))
   }
 
   /**
@@ -66,7 +67,7 @@ class CatalogActionBean @Inject()(
   def viewItem(itemId: String) = Action { implicit req =>
     val item = catalogService.getItem(itemId)
 
-    Ok(html.catalog.Item(req.session, item))
+    Ok(html.catalog.Item(item))
   }
 
   /**
@@ -79,7 +80,7 @@ class CatalogActionBean @Inject()(
       },
       data => {
         val productList = catalogService.searchProductList(data.keyword.toLowerCase)
-        Ok(html.catalog.SearchProducts(req.session, productList))
+        Ok(html.catalog.SearchProducts(productList))
       }
     )
   }

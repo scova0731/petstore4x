@@ -19,9 +19,9 @@
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 
-@(session: Session)(implicit messages: Messages)
+@()(implicit messages: Messages, session: Session, flash: Flash)
 
-@IncludeTop(session)
+@IncludeTop()
 
 <div id="Catalog"><stripes:form
 	beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean"
@@ -50,4 +50,4 @@
 
 </stripes:form></div>
 
-@IncludeBottom(session)
+@IncludeBottom()

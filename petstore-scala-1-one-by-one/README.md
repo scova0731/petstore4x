@@ -72,13 +72,9 @@ beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean" event="newOrderFor
     
 # TODO
 
-- views共通
-  - sessionScope セッションを置き換える
-- views/account
-- views/cart
-- views/catalog
-- views/common
 - ライセンス表記 (LICENSE.md と コード内の表示)
+- a hrefをroutesベースに置き換える
+- 外向けのREADMEにする
     
 # TODO - どうにかする
 
@@ -124,7 +120,7 @@ MyBatisModuleを再構成する
 │   ├─[ ] EditAccountForm.scala.html
 │   ├─[ ] IncludeAccountFields.scala.html
 │   ├─[ ] NewAccountForm.scala.html
-│   └─[ ] SignonForm.scala.html
+│   └─[x] SignonForm.scala.html
 ├── cart
 │   ├─[x] Cart.scala.html
 │   ├─[ ] Checkout.scala.html
@@ -141,10 +137,10 @@ MyBatisModuleを再構成する
 │   └─[x] IncludeTop.scala.html
 │       <stripes:messages /> ... 消しちゃったけど、、、エラーでないときにつかう？
 └── order
-    ├─[ ] ConfirmOrder.scala.html
+    ├─[x] ConfirmOrder.scala.html
     ├─[ ] ListOrders.scala.html
-    ├─[ ] NewOrderForm.scala.html
-    ├─[ ] ShippingForm.scala.html
+    ├─[x] NewOrderForm.scala.html
+    ├─[x] ShippingForm.scala.html
     └─[ ] ViewOrder.scala.html
         
 

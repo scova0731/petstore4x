@@ -17,23 +17,38 @@
 @*--%>*@
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@(session: Session)(implicit messages: Messages)
+@()(implicit messages: Messages, session: Session, flash: Flash)
 
-@IncludeTop(session)
+@IncludeTop()
 
-<div id="Catalog"><stripes:form
+<div id="Catalog">
+	@*<stripes:form*@
+	@*beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean"*@
+	@*focus="">*@
+	@helper.form(action = routes.AccountActionBean.signon()) {
+
+		<p>Please enter your username and password.</p>
+		<p>
+			Username:
+			@*<stripes:text name="username" value="j2ee" />*@
+			<input type="text" name="username" value="j2ee"/>
+			<br />
+			Password:
+			@*<stripes:password name="password" value="j2ee" />*@
+			<input type="password" name="password" value="j2ee" />
+		</p>
+		@*<stripes:submit name="signon" value="Login" />*@
+		<input type="submit" name="signon" value="Login" />
+
+	@*</stripes:form>*@
+	}
+	Need a user name and password?
+	<stripes:link
 	beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean"
-	focus="">
+	event="newAccountForm">Register Now!</stripes:link>
+</div>
 
-	<p>Please enter your username and password.</p>
-	<p>Username:<stripes:text name="username" value="j2ee" /> <br />
-	Password:<stripes:password name="password" value="j2ee" /></p>
-	<stripes:submit name="signon" value="Login" />
-
-</stripes:form> Need a user name and password? <stripes:link
-	beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean"
-	event="newAccountForm">Register Now!</stripes:link></div>
-
-@IncludeBottom(session)
+@IncludeBottom()
 

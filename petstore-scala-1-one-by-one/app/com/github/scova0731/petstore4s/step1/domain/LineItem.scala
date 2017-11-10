@@ -1,5 +1,7 @@
 package com.github.scova0731.petstore4s.step1.domain
 
+import play.api.libs.json.Json
+
 /**
   * The Class LineItem.
   */
@@ -37,4 +39,10 @@ case class LineItem(
     else
       null
   }
+}
+
+object LineItem {
+
+  implicit val reads = Json.reads[LineItem]
+  implicit val writes = Json.writes[LineItem]
 }

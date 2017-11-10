@@ -57,7 +57,7 @@ class CartActionBean @Inject()(
         cart.addItem(item, isInStock)
       }
 
-    Ok(html.cart.Cart(newCart)).withSession(withCart(newCart))
+    Ok(html.cart.Cart(newCart)).addingToSession(withCart(newCart))
   }
 
   /**
@@ -70,7 +70,7 @@ class CartActionBean @Inject()(
 
     cart.removeItemById(itemId) match {
       case Some(newCart) =>
-          Ok(html.cart.Cart(newCart)).withSession(withCart(newCart))
+          Ok(html.cart.Cart(newCart)).addingToSession(withCart(newCart))
       case None =>
         renderError("Attempted to remove null CartItem from Cart.")
     }
@@ -97,7 +97,7 @@ class CartActionBean @Inject()(
           else
             cart.removeItemById(itemId).getOrElse(cart)
         }
-        Ok(html.cart.Cart(newCart)).withSession(withCart(newCart))
+        Ok(html.cart.Cart(newCart)).addingToSession(withCart(newCart))
       }
     )
   }

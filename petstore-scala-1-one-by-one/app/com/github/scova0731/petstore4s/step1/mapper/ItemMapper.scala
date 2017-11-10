@@ -5,7 +5,7 @@ import com.github.scova0731.petstore4s.step1.domain.Item
 
 trait ItemMapper {
 
-  def updateInventoryQuantity(param: Map[String, AnyRef]): Unit
+  def updateInventoryQuantity(param: java.util.Map[String, Any]): Unit
 
   def getInventoryQuantity(itemId: String): Int
 

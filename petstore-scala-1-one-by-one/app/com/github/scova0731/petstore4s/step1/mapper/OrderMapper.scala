@@ -1,16 +1,16 @@
 package com.github.scova0731.petstore4s.step1.mapper
 
-import com.github.scova0731.petstore4s.step1.domain.Order
+import com.github.scova0731.petstore4s.step1.domain.FlatOrder
 
 
 trait OrderMapper {
 
-  def getOrdersByUsername(username: String): List[Order]
+  def getOrdersByUsername(username: String): List[FlatOrder]
 
-  def getOrder(orderId: Int): Order
+  def getOrder(orderId: Int): FlatOrder
 
-  def insertOrder(order: Order): Unit
+  def insertOrder(order: FlatOrder): Unit
 
-  def insertOrderStatus(order: Order): Unit
+  def insertOrderStatus(order: FlatOrder): Unit
 
 }

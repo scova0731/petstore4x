@@ -2,7 +2,9 @@ package com.github.scova0731.petstore4s.step1.service
 
 import javax.inject.Inject
 
-import com.github.scova0731.petstore4s.step1.domain.{Order, Sequence}
+import scala.collection.JavaConverters._
+
+import com.github.scova0731.petstore4s.step1.domain.{FlatOrder, Sequence}
 import com.github.scova0731.petstore4s.step1.mapper.{ItemMapper, LineItemMapper, OrderMapper, SequenceMapper}
 
 class OrderService @Inject()(
@@ -19,15 +21,14 @@ class OrderService @Inject()(
     * @param order the order
     */
   //  @Transactional
-  def insertOrder(order: Order): Unit = {
+  def insertOrder(order: FlatOrder): Unit = {
     val newOrder = order.copy(orderId = getNextId("ordernum"))
-    var i = 0
 
     newOrder.lineItems.foreach { lineItem =>
       itemMapper.updateInventoryQuantity(Map(
         "itemId" -> lineItem.itemId,
-        "increment" -> new Integer(lineItem.quantity)
-      ))
+        "increment" -> lineItem.quantity
+      ).asJava)
     }
 
     orderMapper.insertOrder(order)
@@ -46,7 +47,7 @@ class OrderService @Inject()(
     * @return the order
     */
   //  @Transactional
-  def getOrder(orderId: Int): Order = {
+  def getOrder(orderId: Int): FlatOrder = {
     val order = orderMapper
       .getOrder(orderId)
       .copy(lineItems = lineItemMapper.getLineItemsByOrderId(orderId))
@@ -66,7 +67,7 @@ class OrderService @Inject()(
     * @param username the username
     * @return the orders by username
     */
-  def getOrdersByUsername(username: String): List[Order] = orderMapper.getOrdersByUsername(username)
+  def getOrdersByUsername(username: String): List[FlatOrder] = orderMapper.getOrdersByUsername(username)
 
   /**
     * Gets the next id.

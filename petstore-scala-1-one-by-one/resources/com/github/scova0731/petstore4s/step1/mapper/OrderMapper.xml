@@ -23,7 +23,7 @@
 
   <cache />
 
-  <select id="getOrder" resultType="com.github.scova0731.petstore4s.step1.domain.Order">
+  <select id="getOrder" resultType="com.github.scova0731.petstore4s.step1.domain.FlatOrder">
     select
       BILLADDR1 AS billAddress1,
       BILLADDR2 AS billAddress2,
@@ -56,7 +56,7 @@
       AND ORDERS.ORDERID = ORDERSTATUS.ORDERID
   </select>
 
-  <select id="getOrdersByUsername" resultType="com.github.scova0731.petstore4s.step1.domain.Order">
+  <select id="getOrdersByUsername" resultType="com.github.scova0731.petstore4s.step1.domain.FlatOrder">
     SELECT
       BILLADDR1 AS billAddress1,
       BILLADDR2 AS billAddress2,

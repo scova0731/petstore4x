@@ -22,9 +22,9 @@
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 @import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@(cart: Cart)(implicit messages: Messages, session: Session)
+@(cart: Cart)(implicit messages: Messages, session: Session, flash: Flash)
 
-@IncludeTop(session)
+@IncludeTop()
 
 
 <div id="BackLink">
@@ -145,7 +145,7 @@
 		@*</stripes:link>*@
 	@*</c:if>*@
 	@if(cart.nonEmpty) {
-		<a href="../order/checkout" class="Button">Proceed to Checkout</a>
+		<a href="../order/new-order-form" class="Button">Proceed to Checkout</a>
 	}
 </div>
 
@@ -167,4 +167,4 @@
 <div id="Separator">&nbsp;</div>
 </div>
 
-@IncludeBottom(session)
+@IncludeBottom()

@@ -18,11 +18,11 @@
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 
-@(session: Session, message: String)(implicit messages: Messages)
+@(message: String)(implicit messages: Messages, session: Session, flash: Flash)
 
-@IncludeTop(session)
+@IncludeTop()
 
 @*<stripes:messages />*@
 @message
 
-@IncludeBottom(session)
+@IncludeBottom()

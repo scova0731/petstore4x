@@ -12,8 +12,8 @@ class AccountService @Inject()(
   def getAccount(username: String): Account =
     accountMapper.getAccountByUsername(username)
 
-  def getAccount(username: String, password: String): Account =
-    accountMapper.getAccountByUsernameAndPassword(username, password)
+  def getAccount(username: String, password: String): Option[Account] =
+    Option(accountMapper.getAccountByUsernameAndPassword(username, password))
 
   /**
     * Insert account.
@@ -36,7 +36,8 @@ class AccountService @Inject()(
   def updateAccount(account: Account): Unit = {
     accountMapper.updateAccount(account)
     accountMapper.updateProfile(account)
-    if (account.password != null && account.password.length > 0)
-      accountMapper.updateSignon(account)
+    // TODO コレは何？
+    //    if (account.password != null && account.password.length > 0)
+    //      accountMapper.updateSignon(account)
   }
 }
