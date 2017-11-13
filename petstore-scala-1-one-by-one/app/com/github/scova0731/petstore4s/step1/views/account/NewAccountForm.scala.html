@@ -18,36 +18,51 @@
 @import com.github.scova0731.petstore4s.step1.views.html.account.IncludeAccountFields
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step1.web.action.routes
 
 @()(implicit messages: Messages, session: Session, flash: Flash)
 
 @IncludeTop()
 
-<div id="Catalog"><stripes:form
-	beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean"
-	focus="">
+<div id="Catalog">
+	@*<stripes:form beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean" focus="">*@
+	@helper.form(action = routes.AccountActionBean.newAccount()) {
 
-	<h3>User Information</h3>
+		<h3>User Information</h3>
 
-	<table>
-		<tr>
-			<td>User ID:</td>
-			<td><stripes:text name="username" /></td>
-		</tr>
-		<tr>
-			<td>New password:</td>
-			<td><stripes:text name="password" /></td>
-		</tr>
-		<tr>
-			<td>Repeat password:</td>
-			<td><stripes:text name="repeatedPassword" /></td>
-		</tr>
-	</table>
+		<table>
+			<tr>
+				<td>User ID:</td>
+				<td>
+					@*<stripes:text name="username" />*@
+					<input type="text" name="username" />
+				</td>
+			</tr>
+			<tr>
+				<td>New password:</td>
+				<td>
+					@*<stripes:text name="password" />*@
+					<input type="text" name="password" />
+				</td>
+			</tr>
+			<tr>
+				<td>Repeat password:</td>
+				<td>
+					@*<stripes:text name="repeatedPassword" />*@
+					<input type="text" name="repeatedPassword">
+				</td>
+			</tr>
+		</table>
 
-	@IncludeAccountFields()
+		@IncludeAccountFields(None)
 
-	<stripes:submit name="newAccount" value="Save Account Information" />
+		@*NOTE Status added by scova0731*@
+		<input type="hidden" name="status" value="NW"/>
 
-</stripes:form></div>
+		@*<stripes:submit name="newAccount" value="Save Account Information" />*@
+		<input type="submit" name="newAccount" value="Save Account Information" />
+
+		@*</stripes:form>*@
+	}</div>
 
 @IncludeBottom()

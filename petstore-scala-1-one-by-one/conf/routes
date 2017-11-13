@@ -2,6 +2,8 @@
 GET    /jpetstore/account/signon-form       com.github.scova0731.petstore4s.step1.web.action.AccountActionBean.signonForm()
 POST   /jpetstore/account/signon            com.github.scova0731.petstore4s.step1.web.action.AccountActionBean.signon()
 GET    /jpetstore/account/signoff           com.github.scova0731.petstore4s.step1.web.action.AccountActionBean.signoff()
+GET    /jpetstore/account/new-account-form  com.github.scova0731.petstore4s.step1.web.action.AccountActionBean.newAccountForm()
+POST   /jpetstore/account/new-account       com.github.scova0731.petstore4s.step1.web.action.AccountActionBean.newAccount()
 GET    /jpetstore/account/edit-account-form com.github.scova0731.petstore4s.step1.web.action.AccountActionBean.editAccountForm()
 POST   /jpetstore/account/edit-account      com.github.scova0731.petstore4s.step1.web.action.AccountActionBean.editAccount()
 
@@ -17,11 +19,12 @@ GET    /jpetstore/catalog/view-item         com.github.scova0731.petstore4s.step
 GET    /jpetstore/catalog/view-product      com.github.scova0731.petstore4s.step1.web.action.CatalogActionBean.viewProduct(productId: String)
 POST   /jpetstore/catalog/search-product    com.github.scova0731.petstore4s.step1.web.action.CatalogActionBean.searchProducts()
 
+GET    /jpetstore/order/list-orders         com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.listOrders()
 GET    /jpetstore/order/new-order-form      com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.newOrderForm()
 POST   /jpetstore/order/new-order           com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.newOrder()
 GET    /jpetstore/order/shipping-form       com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.shippingForm()
 GET    /jpetstore/order/confirm-order       com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.confirmOrder()
-GET    /jpetstore/order/view-order          com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.viewOrder()
+GET    /jpetstore/order/view-order          com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.viewOrder(orderId: Int)
 
 GET    /jpetstore/                  controllers.HomeController.index
 

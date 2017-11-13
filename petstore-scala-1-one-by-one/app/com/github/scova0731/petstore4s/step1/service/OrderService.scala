@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import scala.collection.JavaConverters._
 
-import com.github.scova0731.petstore4s.step1.domain.{FlatOrder, Sequence}
+import com.github.scova0731.petstore4s.step1.domain.{FlatOrder, Order, Sequence}
 import com.github.scova0731.petstore4s.step1.mapper.{ItemMapper, LineItemMapper, OrderMapper, SequenceMapper}
 
 class OrderService @Inject()(
@@ -47,7 +47,7 @@ class OrderService @Inject()(
     * @return the order
     */
   //  @Transactional
-  def getOrder(orderId: Int): FlatOrder = {
+  def getOrder(orderId: Int): Order = {
     val order = orderMapper
       .getOrder(orderId)
       .copy(lineItems = lineItemMapper.getLineItemsByOrderId(orderId))
@@ -58,7 +58,7 @@ class OrderService @Inject()(
       lineItem.copy(item = newItem)
     })
 
-    newOrder
+    newOrder.toOrder
   }
 
   /**
@@ -67,7 +67,8 @@ class OrderService @Inject()(
     * @param username the username
     * @return the orders by username
     */
-  def getOrdersByUsername(username: String): List[FlatOrder] = orderMapper.getOrdersByUsername(username)
+  def getOrdersByUsername(username: String): Seq[Order] =
+    orderMapper.getOrdersByUsername(username).asScala.map(_.toOrder)
 
   /**
     * Gets the next id.

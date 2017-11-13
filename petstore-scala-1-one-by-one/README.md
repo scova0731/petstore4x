@@ -32,9 +32,8 @@ scala-reference-architecture/clean-architecture
   - ライセンス文をコメントアウト
   - stripes:link を静的リンクに置き換え (beanclass属性は残した)
 
-catalog/Main
 beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean"
- -> ../catalog/
+  -> ../catalog/
 beanclass="org.mybatis.jpetstore.web.actions.CartActionBean" event="viewCart" 
   -> ../cart/cart
 beanclass="org.mybatis.jpetstore.web.actions.CartActionBean" event="addItemToCart" 
@@ -60,6 +59,8 @@ beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean" event="viewItem"
   -> ../catalog/view-item?itemId=
 beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean" event="newOrderForm"
   -> ../order/checkout
+beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean" event="listOrders"
+  -> ../order/list-orders
     
 # TODO - sessionScope っぽいもの
 "accountBean" = "true"
@@ -117,9 +118,9 @@ MyBatisModuleを再構成する
 
 # Progress
 ├── account
-│   ├─[ ] EditAccountForm.scala.html
-│   ├─[ ] IncludeAccountFields.scala.html
-│   ├─[ ] NewAccountForm.scala.html
+│   ├─[x] EditAccountForm.scala.html
+│   ├─[x] IncludeAccountFields.scala.html
+│   ├─[x] NewAccountForm.scala.html
 │   └─[x] SignonForm.scala.html
 ├── cart
 │   ├─[x] Cart.scala.html
@@ -138,10 +139,10 @@ MyBatisModuleを再構成する
 │       <stripes:messages /> ... 消しちゃったけど、、、エラーでないときにつかう？
 └── order
     ├─[x] ConfirmOrder.scala.html
-    ├─[ ] ListOrders.scala.html
+    ├─[x] ListOrders.scala.html たぶんOK
     ├─[x] NewOrderForm.scala.html
     ├─[x] ShippingForm.scala.html
-    └─[ ] ViewOrder.scala.html
+    └─[x] ViewOrder.scala.html たぶんOK
         
 
 # 改めてインストール

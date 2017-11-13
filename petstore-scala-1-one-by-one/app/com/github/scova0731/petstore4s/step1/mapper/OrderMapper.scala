@@ -5,7 +5,7 @@ import com.github.scova0731.petstore4s.step1.domain.FlatOrder
 
 trait OrderMapper {
 
-  def getOrdersByUsername(username: String): List[FlatOrder]
+  def getOrdersByUsername(username: String): java.util.List[FlatOrder]
 
   def getOrder(orderId: Int): FlatOrder
 

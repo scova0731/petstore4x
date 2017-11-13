@@ -15,10 +15,14 @@
 @*limitations under the License.*@
 
 @*--%>*@
+@import java.text.DecimalFormat
+@import java.time.format.DateTimeFormatter
+@import com.github.scova0731.petstore4s.step1.domain.Order
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@()(implicit messages: Messages, session: Session, flash: Flash)
+@(orders: Seq[Order])(implicit messages: Messages, session: Session, flash: Flash)
 
 @IncludeTop()
 
@@ -31,20 +35,31 @@
 		<th>Total Price</th>
 	</tr>
 
-	<c:forEach var="order" items="${actionBean.orderList}">
+	@*<c:forEach var="order" items="${actionBean.orderList}">*@
+	@for(order <- orders) {
 		<tr>
-			<td><stripes:link
-				beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean"
-				event="viewOrder">
-				<stripes:param name="orderId" value="${order.orderId}" />
-			    ${order.orderId}
-			  </stripes:link></td>
-			<td><fmt:formatDate value="${order.orderDate}"
-				pattern="yyyy/MM/dd hh:mm:ss" /></td>
-			<td><fmt:formatNumber value="${order.totalPrice}"
-				pattern="$#,##0.00" /></td>
+			<td>
+				@*<stripes:link*@
+				@*beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean"*@
+				@*event="viewOrder">*@
+				@*<stripes:param name="orderId" value="${order.orderId}" />*@
+			    @*${order.orderId}*@
+			  @*</stripes:link>*@
+				<a href="@routes.OrderActionBean.viewOrder(order.orderId)">@order.orderId</a>
+			</td>
+			<td>
+				@*<fmt:formatDate value="${order.orderDate}"*@
+				@*pattern="yyyy/MM/dd hh:mm:ss" />*@
+				@order.orderDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"))
+			</td>
+			<td>
+				@*<fmt:formatNumber value="${order.totalPrice}"*@
+				@*pattern="$#,##0.00" />*@
+				@(new DecimalFormat("$#,##0.00").format(order.totalPrice))
+			</td>
 		</tr>
-	</c:forEach>
+	@*</c:forEach>*@
+	}
 </table>
 
 @IncludeBottom()

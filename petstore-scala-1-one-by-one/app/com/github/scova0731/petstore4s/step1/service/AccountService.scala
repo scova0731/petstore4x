@@ -20,7 +20,6 @@ class AccountService @Inject()(
     *
     * @param account the account
     */
-  //  @Transactional
   def insertAccount(account: Account): Unit = {
     accountMapper.insertAccount(account)
     accountMapper.insertProfile(account)
@@ -32,12 +31,10 @@ class AccountService @Inject()(
     *
     * @param account the account
     */
-  //  @Transactional
   def updateAccount(account: Account): Unit = {
     accountMapper.updateAccount(account)
     accountMapper.updateProfile(account)
-    // TODO コレは何？
-    //    if (account.password != null && account.password.length > 0)
-    //      accountMapper.updateSignon(account)
+    if (!account.isPasswordEmpty)
+      accountMapper.updateSignon(account)
   }
 }

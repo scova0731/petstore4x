@@ -7,7 +7,7 @@ import play.api.data._
 import play.api.i18n.MessagesApi
 import com.github.scova0731.petstore4s.step1.domain.Account
 import com.github.scova0731.petstore4s.step1.service.{AccountService, CatalogService}
-import net.sourceforge.stripes.action.{ForwardResolution, RedirectResolution, Resolution, SessionScope}
+//import net.sourceforge.stripes.action.{ForwardResolution, RedirectResolution, Resolution, SessionScope}
 import com.github.scova0731.petstore4s.step1.views.html
 
 /**
@@ -18,11 +18,12 @@ import com.github.scova0731.petstore4s.step1.views.html
 //@SessionScope
 //@SerialVersionUID(5499663666155758178L)
 object AccountActionBean {
-  private val NEW_ACCOUNT: String = "/WEB-INF/jsp/account/NewAccountForm.jsp"
-  private val EDIT_ACCOUNT: String = "/WEB-INF/jsp/account/EditAccountForm.jsp"
-  private val SIGNON: String = "/WEB-INF/jsp/account/SignonForm.jsp"
-  private val LANGUAGE_LIST: Seq[String] = Seq("english", "japanese")
-  private val CATEGORY_LIST: Seq[String] = Seq("FISH", "DOGS", "REPTILES", "CATS", "BIRDS")
+//  private val NEW_ACCOUNT: String = "/WEB-INF/jsp/account/NewAccountForm.jsp"
+//  private val EDIT_ACCOUNT: String = "/WEB-INF/jsp/account/EditAccountForm.jsp"
+//  private val SIGNON: String = "/WEB-INF/jsp/account/SignonForm.jsp"
+
+  val LANGUAGE_LIST: Seq[String] = Seq("english", "japanese")
+  val CATEGORY_LIST: Seq[String] = Seq("FISH", "DOGS", "REPTILES", "CATS", "BIRDS")
 
   case class LogonForm(username: String, password: String)
 
@@ -31,6 +32,29 @@ object AccountActionBean {
       "username" -> nonEmptyText,
       "password" -> nonEmptyText
     )(LogonForm.apply)(LogonForm.unapply)
+  )
+
+  val accountForm = Form(
+    mapping(
+      "username" -> nonEmptyText,
+      "password" -> optional(text),
+      "email" -> nonEmptyText,
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText,
+      "status" -> nonEmptyText,
+      "address1" -> nonEmptyText,
+      "address2" -> nonEmptyText,
+      "city" -> nonEmptyText,
+      "state" -> nonEmptyText,
+      "zip" -> nonEmptyText,
+      "country" -> nonEmptyText,
+      "phone" -> nonEmptyText,
+      "languagePreference" -> nonEmptyText,
+      "favouriteCategoryId" -> nonEmptyText,
+      "listOption" -> boolean,
+      "bannerOption" -> boolean
+    )(Account.applyForForm)(Account.unapplyForForm)
+
   )
 }
 
@@ -45,18 +69,18 @@ class AccountActionBean @Inject()(
 
 //  private val accountService: AccountService = null
 //  private val catalogService: CatalogService = null
-  private var account: Account = null //new Account
-  private var myList: Seq[Product] = null
-  private var authenticated: Boolean = false
+//  private var account: Account = null //new Account
+//  private var myList: Seq[Product] = null
+//  private var authenticated: Boolean = false
 
-  def getAccount: Account = this.account
+//  def getAccount: Account = this.account
 
-  def getUsername: String = account.username
+//  def getUsername: String = account.username
 
 //  @Validate(required = true, on = Array(Array("signon", "newAccount", "editAccount")))
-  def setUsername(username: String): Unit = {
+//  def setUsername(username: String): Unit = {
 //    account.setUsername(username)
-  }
+//  }
 
 //  def getPassword: String = account.password
 
@@ -65,29 +89,47 @@ class AccountActionBean @Inject()(
 //    account.setPassword(password)
 //  }
 
-  def getMyList: Seq[Product] = myList
+//  def getMyList: Seq[Product] = myList
 
-  def setMyList(myList: Seq[Product]): Unit = {
-    this.myList = myList
+//  def setMyList(myList: Seq[Product]): Unit = {
+//    this.myList = myList
+//  }
+
+//  def getLanguages: Seq[String] = AccountActionBean.LANGUAGE_LIST
+
+//  def getCategories: Seq[String] = AccountActionBean.CATEGORY_LIST
+
+//  def newAccountForm: Resolution = new ForwardResolution(AccountActionBean.NEW_ACCOUNT)
+
+  def newAccountForm() = Action { implicit req =>
+    Ok(html.account.NewAccountForm())
   }
 
-  def getLanguages: Seq[String] = AccountActionBean.LANGUAGE_LIST
+//  /**
+//    * New account.
+//    *
+//    * @return the resolution
+//    */
+//  def newAccount0: Resolution = {
+//    accountService.insertAccount(account)
+//    account = accountService.getAccount(account.username)
+//    myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
+//    authenticated = true
+//    new RedirectResolution(classOf[CatalogActionBean])
+//  }
 
-  def getCategories: Seq[String] = AccountActionBean.CATEGORY_LIST
+  def newAccount() = Action { implicit req =>
+    accountForm.bindFromRequest().fold(
+      error => renderError(s"Error details: ${error.toString}"),
+      form => {
+        accountService.insertAccount(form)
+        val account = accountService.getAccount(form.username)
+        val myList = catalogService.getProductListByCategory(account.favouriteCategoryId) //TODO これはどこでつかう？
+        Redirect(routes.CatalogActionBean.main())
+          .addingToSession(withAccount(account):_*) // NOTE アカウントを更新
+      }
+    )
 
-  def newAccountForm: Resolution = new ForwardResolution(AccountActionBean.NEW_ACCOUNT)
-
-  /**
-    * New account.
-    *
-    * @return the resolution
-    */
-  def newAccount: Resolution = {
-    accountService.insertAccount(account)
-    account = accountService.getAccount(account.username)
-    myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
-    authenticated = true
-    new RedirectResolution(classOf[CatalogActionBean])
   }
 
   /**
@@ -109,16 +151,24 @@ class AccountActionBean @Inject()(
     *
     * @return the resolution
     */
-  def editAccount0: Resolution = {
-    accountService.updateAccount(account)
-    account = accountService.getAccount(account.username)
-    myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
-    new RedirectResolution(classOf[CatalogActionBean])
-  }
+//  def editAccount0: Resolution = {
+//    accountService.updateAccount(account)
+//    account = accountService.getAccount(account.username)
+//    myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
+//    new RedirectResolution(classOf[CatalogActionBean])
+//  }
 
   def editAccount() = Action { implicit req =>
-    Ok
-
+    accountForm.bindFromRequest().fold(
+      error => renderError(s"Error details: ${error.toString}"),
+      form => {
+        accountService.updateAccount(form)
+        val account = accountService.getAccount(form.username)
+        val myList = catalogService.getProductListByCategory(account.favouriteCategoryId) //TODO これはどこでつかう？
+        Redirect(routes.CatalogActionBean.main())
+          .addingToSession(withAccount(account):_*) // NOTE アカウントを更新
+      }
+    )
   }
 
   /**

@@ -15,6 +15,7 @@
        @*limitations under the License.*@
 
 @*--%>*@
+@import java.time.format.DateTimeFormatter
 @import com.github.scova0731.petstore4s.step1.domain.Order
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
@@ -41,8 +42,7 @@ press continue...
 		<br />
 		<font size="3"><b>
 			@*<fmt:formatDate value="${actionBean.order.orderDate}" pattern="yyyy/MM/dd hh:mm:ss" />*@
-			@*TODO format date*@
-			@order.orderDate
+			@order.orderDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"))
 		</b></font>
 		</th>
 	</tr>

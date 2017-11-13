@@ -168,11 +168,18 @@ class OrderActionBean @Inject()(
     *
     * @return the resolution
     */
-  def listOrders: Resolution = {
-    val session = context.getRequest.getSession
-    val accountBean: AccountActionBean = session.getAttribute("/actions/Account.action").asInstanceOf[AccountActionBean]
-    orderList = orderService.getOrdersByUsername(accountBean.getAccount.username)
-    new ForwardResolution(OrderActionBean.LIST_ORDERS)
+//  def listOrders0: Resolution = {
+//    val session = context.getRequest.getSession
+//    val accountBean: AccountActionBean = session.getAttribute("/actions/Account.action").asInstanceOf[AccountActionBean]
+//    orderList = orderService.getOrdersByUsername(accountBean.getAccount.username)
+//    new ForwardResolution(OrderActionBean.LIST_ORDERS)
+//  }
+
+  def listOrders() = Action { implicit req =>
+    val account = extractAccount().get
+    val orderList = orderService.getOrdersByUsername(account.username)
+
+    Ok(html.order.ListOrders(orderList))
   }
 
   /**
@@ -267,7 +274,7 @@ class OrderActionBean @Inject()(
           case None =>
             if (confirmationForm.bindFromRequest.value.exists(_.confirmed)) {
               orderService.insertOrder(order.toFlatOrder)
-              Redirect(routes.OrderActionBean.viewOrder())
+              Redirect(routes.OrderActionBean.viewOrder(order.orderId))
             }
             else
               renderError("Order was not processed successfully")
@@ -323,16 +330,16 @@ class OrderActionBean @Inject()(
 //    }
 //  }
 
-  def viewOrder = Action { implicit req =>
-    val order = extractOrder().get
+  def viewOrder(orderId: Int) = Action { implicit req =>
+    val order = orderService.getOrder(orderId)
     val account = extractAccount().get
 
-    if (account.username == order.username)
-      Ok(html.order.ViewOrder())
+    if (account.username == order.username) {
+      Ok(html.order.ViewOrder(order))
         .removingFromSession("order", "cart")
         .flashing("message" -> "Thank you, your order has been submitted.")
 
-    else
+    } else
       renderError("You may only view your own orders.")
   }
 

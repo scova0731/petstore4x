@@ -35,6 +35,33 @@ case class FlatOrder(
   lineItems : Seq[LineItem]
 ) {
 
+  def toOrder: Order = Order(
+    username = username,
+    orderDate = orderDate,
+    shipAddress = OrderAddress(
+      toFirstName = shipToFirstName,
+      toLastName = shipToLastName,
+      address1 = shipAddress1,
+      address2 = shipAddress2,
+      city = shipCity,
+      state = shipState,
+      zip = shipZip,
+      country = shipCountry
+    ),
+    billAddress = OrderAddress(
+      toFirstName = billToFirstName,
+      toLastName = billToLastName,
+      address1 = billAddress1,
+      address2 = billAddress2,
+      city = billCity,
+      state = billState,
+      zip = billZip,
+      country = billCountry
+    ),
+    totalPrice = totalPrice,
+    lineItems = lineItems
+  )
+  
 
 //  def addLineItem(cartItem: CartItem): Unit = {
 //    val lineItem = new LineItem(lineItems.size + 1, cartItem)

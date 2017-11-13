@@ -15,48 +15,83 @@
        @*limitations under the License.*@
 
 @*--%>*@
+@import com.github.scova0731.petstore4s.step1.domain.Account
+@import com.github.scova0731.petstore4s.step1.web.action.AccountActionBean
+
+@(account: Option[Account])
+
 <h3>Account Information</h3>
 
 <table>
 	<tr>
 		<td>First name:</td>
-		<td><stripes:text name="account.firstName" /></td>
+		<td>
+			@*<stripes:text name="account.firstName" />*@
+			<input type="text" name="firstName" value="@account.map(_.firstName)" />
+		</td>
 	</tr>
 	<tr>
 		<td>Last name:</td>
-		<td><stripes:text name="account.lastName" /></td>
+		<td>
+			@*<stripes:text name="account.lastName" />*@
+			<input type="text" name="lastName" value="@account.map(_.lastName)" />
+		</td>
 	</tr>
 	<tr>
 		<td>Email:</td>
-		<td><stripes:text size="40" name="account.email" /></td>
+		<td>
+			@*<stripes:text size="40" name="account.email" />*@
+			<input type="text" size="40" name="email" value="@account.map(_.email)" />
+		</td>
 	</tr>
 	<tr>
 		<td>Phone:</td>
-		<td><stripes:text name="account.phone" /></td>
+		<td>
+			@*<stripes:text name="account.phone" />*@
+			<input type="text" name="phone" value="@account.map(_.phone)" />
+		</td>
 	</tr>
 	<tr>
 		<td>Address 1:</td>
-		<td><stripes:text size="40" name="account.address1" /></td>
+		<td>
+			@*<stripes:text size="40" name="account.address1" />*@
+			<input type="text" size="40" name="address1" value="@account.map(_.address1)" />
+		</td>
 	</tr>
 	<tr>
 		<td>Address 2:</td>
-		<td><stripes:text size="40" name="account.address2" /></td>
+		<td>
+			@*<stripes:text size="40" name="account.address2" />*@
+			<input type="text" size="40" name="address2" value="@account.map(_.address2)" />
+		</td>
 	</tr>
 	<tr>
 		<td>City:</td>
-		<td><stripes:text name="account.city" /></td>
+		<td>
+			@*<stripes:text name="account.city" />*@
+			<input type="text" name="city" value="@account.map(_.city)" />
+		</td>
 	</tr>
 	<tr>
 		<td>State:</td>
-		<td><stripes:text size="4" name="account.state" /></td>
+		<td>
+			@*<stripes:text size="4" name="account.state" />*@
+			<input type="text" size="4" name="state" value="@account.map(_.state)" />
+		</td>
 	</tr>
 	<tr>
 		<td>Zip:</td>
-		<td><stripes:text size="10" name="account.zip" /></td>
+		<td>
+			@*<stripes:text size="10" name="account.zip" />*@
+			<input type="text" size="10" name="zip" value="@account.map(_.zip)" />
+		</td>
 	</tr>
 	<tr>
 		<td>Country:</td>
-		<td><stripes:text size="15" name="account.country" /></td>
+		<td>
+			@*<stripes:text size="15" name="account.country" />*@
+			<input type="text" size="15" name="country" value="@account.map(_.country)" />
+		</td>
 	</tr>
 </table>
 
@@ -65,23 +100,51 @@
 <table>
 	<tr>
 		<td>Language Preference:</td>
-		<td><stripes:select name="account.languagePreference">
-			<stripes:options-collection collection="${actionBean.languages}" />
-		</stripes:select></td>
+		<td>
+			@*<stripes:select name="account.languagePreference">*@
+				@*<stripes:options-collection collection="${actionBean.languages}" />*@
+			@*</stripes:select>*@
+			<select name="languagePreference" value="@account.map(_.languagePreference)">
+			@for(lang <- AccountActionBean.LANGUAGE_LIST) {
+				<option value="@lang"
+					@(if(Some(lang) == account.map(_.languagePreference)) "selected" else "")
+				>@lang</option>
+			}
+			</select>
+		</td>
 	</tr>
 	<tr>
 		<td>Favourite Category:</td>
-		<td><stripes:select name="account.favouriteCategoryId">
-			<stripes:options-collection collection="${actionBean.categories}" />
-		</stripes:select></td>
+		<td>
+			@*<stripes:select name="account.favouriteCategoryId">*@
+				@*<stripes:options-collection collection="${actionBean.categories}" />*@
+			@*</stripes:select>*@
+			<select name="favouriteCategoryId" value="@account.map(_.favouriteCategoryId)">
+			@for(cat <- AccountActionBean.CATEGORY_LIST) {
+				<option value="@cat"
+					@(if(Some(cat) == account.map(_.favouriteCategoryId)) "selected" else "")
+				>@cat</option>
+			}
+			</select>
+		</td>
 	</tr>
 	<tr>
 		<td>Enable MyList</td>
-		<td><stripes:checkbox name="account.listOption" /></td>
+		<td>
+			@*<stripes:checkbox name="account.listOption" />*@
+			<input type="checkbox" name="listOption" value="true"
+				@(if(account.exists(_.listOption == true)) "checked" else "")
+			>
+		</td>
 	</tr>
 	<tr>
 		<td>Enable MyBanner</td>
-		<td><stripes:checkbox name="account.bannerOption" /></td>
+		<td>
+			@*<stripes:checkbox name="account.bannerOption" />*@
+			<input type="checkbox" name="bannerOption" value="true"
+				@(if(account.exists(_.bannerOption == true)) "checked" else "")
+			>
+		</td>
 	</tr>
 
 </table>
