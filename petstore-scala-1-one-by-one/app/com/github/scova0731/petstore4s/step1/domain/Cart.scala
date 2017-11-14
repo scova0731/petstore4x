@@ -10,24 +10,24 @@ import play.api.libs.json.Json
   *
   */
 case class Cart(
-  items: Seq[CartItem] = Seq.empty,
+  items: Seq[CartItem] = Seq.empty //,
 
-  @deprecated("Use items instead")
-  itemMap2: Map[String, CartItem] = Map.empty,
-  @deprecated("Use items instead")
-  itemList2: List[CartItem] = List.empty
+//  @deprecated("Use items instead")
+//  itemMap2: Map[String, CartItem] = Map.empty,
+//  @deprecated("Use items instead")
+//  itemList2: List[CartItem] = List.empty
 ) {
 
   val isEmpty = items.isEmpty
   val nonEmpty = items.nonEmpty
 
-  @deprecated("Use items instead")
-  private val itemMap = new java.util.concurrent.ConcurrentHashMap[String, CartItem]
-  @deprecated("Use items instead")
-  private val itemList = new util.ArrayList[CartItem]
+//  @deprecated("Use items instead")
+//  private val itemMap = new java.util.concurrent.ConcurrentHashMap[String, CartItem]
+//  @deprecated("Use items instead")
+//  private val itemList = new util.ArrayList[CartItem]
 
 
-  def getAllCartItems: util.Iterator[CartItem] = itemList.iterator
+//  def getAllCartItems: util.Iterator[CartItem] = itemList.iterator
 
   def containsItemId(itemId: String): Boolean =
     items.exists(_.item.itemId == itemId)
@@ -108,16 +108,16 @@ case class Cart(
   // TODO rewrite this one
   def subTotal: BigDecimal = {
     var subTotal = BigDecimal(0)
-    val items = getAllCartItems
-    while ( {
-      items.hasNext
-    }) {
-      val cartItem = items.next
-      val item = cartItem.item
-      val listPrice = item.listPrice
-      val quantity = BigDecimal(String.valueOf(cartItem.quantity))
-      subTotal = subTotal.+(listPrice.*(quantity))
-    }
+//    val items = getAllCartItems
+//    while ( {
+//      items.hasNext
+//    }) {
+//      val cartItem = items.next
+//      val item = cartItem.item
+//      val listPrice = item.listPrice
+//      val quantity = BigDecimal(String.valueOf(cartItem.quantity))
+//      subTotal = subTotal.+(listPrice.*(quantity))
+//    }
     subTotal
   }
 }

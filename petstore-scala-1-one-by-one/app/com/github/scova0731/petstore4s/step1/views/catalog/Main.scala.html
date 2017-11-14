@@ -15,10 +15,11 @@
        @*limitations under the License.*@
 
 @*--%>*@
+@import com.github.scova0731.petstore4s.step1.domain.Account
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 
-@()(implicit messages: Messages, session: Session, flash: Flash)
+@()(implicit messages: Messages, flash: Flash, account: Option[Account])
 
 @IncludeTop()
 
@@ -30,8 +31,8 @@
 			@*Welcome ${sessionScope.accountBean.account.firstName}!*@
 		@*</c:if>*@
 	@*</c:if>*@
-	@if(session.get("accountBean_authenticated").contains("true")) {
-		Welcome @session("accountBean_account_firstName")
+	@if(account.isDefined) {
+		Welcome @account.get.firstName
 	}
 </div>
 </div>

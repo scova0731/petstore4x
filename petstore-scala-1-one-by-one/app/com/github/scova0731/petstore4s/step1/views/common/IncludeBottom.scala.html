@@ -15,8 +15,9 @@
        @*limitations under the License.*@
 
 @*--%>*@
+@import com.github.scova0731.petstore4s.step1.domain.Account
 
-@()(implicit messages: Messages, session: Session, flash: Flash)
+@()(implicit messages: Messages, flash: Flash, account: Option[Account] = None)
 
 </div>
 
@@ -35,8 +36,8 @@
 			@*</c:if>*@
 		@*</c:if>*@
 	@*</c:if>*@
-	@if(session.get("accountBean_authenticated").contains("true")) {
-		@Html(session.get("accountBean_account_bannerName").get)
+	@if(account.isDefined) {
+		@Html(account.get.bannerName)
 	}
 </div>
 

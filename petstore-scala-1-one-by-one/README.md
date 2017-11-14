@@ -73,8 +73,12 @@ beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean" event="listOrders"
     
 # TODO
 
-- ライセンス表記 (LICENSE.md と コード内の表示)
+- EHCacheを使うようにする (Cookie制限超えたw)
+- Cart周りをどうするか 
 - a hrefをroutesベースに置き換える
+- session を整理する AbstractActionBeanと各HTML
+
+- ライセンス表記 (LICENSE.md と コード内の表示)
 - 外向けのREADMEにする
     
 # TODO - どうにかする
@@ -124,8 +128,8 @@ MyBatisModuleを再構成する
 │   └─[x] SignonForm.scala.html
 ├── cart
 │   ├─[x] Cart.scala.html
-│   ├─[ ] Checkout.scala.html
-│   └─[ ] IncludeMyList.scala.html
+│   ├─[x] Checkout.scala.html
+│   └─[x] IncludeMyList.scala.html
 ├── catalog
 │   ├─[x] Category.scala.html
 │   ├─[x] Item.scala.html

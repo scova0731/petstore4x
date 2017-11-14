@@ -2,10 +2,10 @@ package com.github.scova0731.petstore4s.step1.web.action
 
 import javax.inject.Inject
 
+import play.api.cache.SyncCacheApi
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.MessagesApi
-
 import com.github.scova0731.petstore4s.step1.service.CatalogService
 import com.github.scova0731.petstore4s.step1.views.html
 
@@ -35,6 +35,7 @@ object CartActionBean {
 
 class CartActionBean @Inject()(
   catalogService: CatalogService,
+  override val cacheApi: SyncCacheApi,
   override val messagesApi: MessagesApi
 ) extends AbstractActionBean {
 
@@ -57,7 +58,8 @@ class CartActionBean @Inject()(
         cart.addItem(item, isInStock)
       }
 
-    Ok(html.cart.Cart(newCart)).addingToSession(withCart(newCart))
+    Ok(html.cart.Cart(newCart, extractMyList()))
+        .addingToSession(withCart(newCart))
   }
 
   /**
@@ -70,7 +72,8 @@ class CartActionBean @Inject()(
 
     cart.removeItemById(itemId) match {
       case Some(newCart) =>
-          Ok(html.cart.Cart(newCart)).addingToSession(withCart(newCart))
+          Ok(html.cart.Cart(newCart, extractMyList()))
+            .addingToSession(withCart(newCart))
       case None =>
         renderError("Attempted to remove null CartItem from Cart.")
     }
@@ -97,13 +100,14 @@ class CartActionBean @Inject()(
           else
             cart.removeItemById(itemId).getOrElse(cart)
         }
-        Ok(html.cart.Cart(newCart)).addingToSession(withCart(newCart))
+        Ok(html.cart.Cart(newCart, extractMyList()))
+          .addingToSession(withCart(newCart))
       }
     )
   }
 
   def viewCart() = Action { implicit req =>
-    Ok(html.cart.Cart(extractOrNewCart()))
+    Ok(html.cart.Cart(extractOrNewCart(), extractMyList()))
   }
 
 //  def checkOut: ForwardResolution = new ForwardResolution(CartActionBean.CHECK_OUT)

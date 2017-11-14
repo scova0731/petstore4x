@@ -17,12 +17,13 @@
 @*--%>*@
 @import java.text.DecimalFormat
 @import com.github.scova0731.petstore4s.step1.domain.Cart
+@import com.github.scova0731.petstore4s.step1.domain.Product
 @import com.github.scova0731.petstore4s.step1.views.html.cart.IncludeMyList
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 @import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@(cart: Cart)(implicit messages: Messages, session: Session, flash: Flash)
+@(cart: Cart, products: Option[Seq[Product]])(implicit messages: Messages, session: Session, flash: Flash)
 
 @IncludeTop()
 
@@ -159,7 +160,7 @@
   @*</c:if>*@
 	@if(session.get("accountBean_authenticated").contains("true")) {
 		@if(session.get("accountBean_account_listOption").exists(_ != null)) {
-			@IncludeMyList()
+			@IncludeMyList(products)
 		}
 	}
 </div>

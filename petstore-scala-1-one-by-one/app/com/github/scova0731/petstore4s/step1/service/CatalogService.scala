@@ -23,7 +23,7 @@ class CatalogService @Inject()(
   def getProduct(productId: String): domain.Product =
     productMapper.getProduct(productId)
 
-  def getProductListByCategory(categoryId: String): List[domain.Product] =
+  def getProductListByCategory(categoryId: String): Seq[domain.Product] =
     productMapper.getProductListByCategory(categoryId).asScala.toList
 
   /**

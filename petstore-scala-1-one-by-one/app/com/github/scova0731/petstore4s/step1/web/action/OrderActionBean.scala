@@ -2,12 +2,12 @@ package com.github.scova0731.petstore4s.step1.web.action
 
 import javax.inject.Inject
 
+import play.api.cache.SyncCacheApi
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.MessagesApi
 import com.github.scova0731.petstore4s.step1.domain.{FlatOrder, Order, OrderAddress}
 import com.github.scova0731.petstore4s.step1.service.OrderService
-import net.sourceforge.stripes.action.{ForwardResolution, Resolution}
 import com.github.scova0731.petstore4s.step1.views.html
 
 /**
@@ -16,11 +16,11 @@ import com.github.scova0731.petstore4s.step1.views.html
   * @author Eduardo Macarron
   */
 object OrderActionBean {
-  private val CONFIRM_ORDER: String = "/WEB-INF/jsp/order/ConfirmOrder.jsp"
-  private val LIST_ORDERS: String = "/WEB-INF/jsp/order/ListOrders.jsp"
-  private val NEW_ORDER: String = "/WEB-INF/jsp/order/NewOrderForm.jsp"
-  private val SHIPPING: String = "/WEB-INF/jsp/order/ShippingForm.jsp"
-  private val VIEW_ORDER: String = "/WEB-INF/jsp/order/ViewOrder.jsp"
+//  private val CONFIRM_ORDER: String = "/WEB-INF/jsp/order/ConfirmOrder.jsp"
+//  private val LIST_ORDERS: String = "/WEB-INF/jsp/order/ListOrders.jsp"
+//  private val NEW_ORDER: String = "/WEB-INF/jsp/order/NewOrderForm.jsp"
+//  private val SHIPPING: String = "/WEB-INF/jsp/order/ShippingForm.jsp"
+//  private val VIEW_ORDER: String = "/WEB-INF/jsp/order/ViewOrder.jsp"
 
   private val CARD_TYPE_LIST = Seq("Visa", "MasterCard", "American Express")
   
@@ -124,6 +124,7 @@ object OrderActionBean {
 
 class OrderActionBean @Inject()(
   orderService: OrderService,
+  override val cacheApi: SyncCacheApi,
   override val messagesApi: MessagesApi
 ) extends AbstractActionBean {
 
@@ -133,7 +134,7 @@ class OrderActionBean @Inject()(
 //  private var order: FlatOrder = null //new Order
 //  private var shippingAddressRequired: Boolean = false
 //  private var confirmed: Boolean = false
-  private var orderList: Seq[FlatOrder] = null
+//  private var orderList: Seq[FlatOrder] = null
 //
 //  def getOrderId: Int = order.orderId
 //
