@@ -50,7 +50,14 @@ case class Order(
 
 object Order {
 
+  /**
+    * JSON deserializer for session cache
+    */
   implicit val reads = Json.reads[Order]
+
+  /**
+    * JSON serializer for session cache
+    */
   implicit val writes = Json.writes[Order]
 
   /**

@@ -51,14 +51,14 @@ case class Account(
     city, state, zip, country, phone, languagePreference, favouriteCategoryId,
     listOption != 0, bannerOption != 0, bannerName)
 
-  // NOTE for MyBatis
+  def isPasswordEmpty: Boolean = password == Account.dummyPassword
+
+  // NOTE getter for MyBatis (See AccountMapper.xml)
   def isListOption(): Boolean = listOption
 
-  // NOTE for MyBatis
+  // NOTE getter for MyBatis (See AccountMapper.xml)
   def isBannerOption(): Boolean = bannerOption
 
-  // NOTE
-  def isPasswordEmpty: Boolean = password == Account.dummyPassword
 }
 
 

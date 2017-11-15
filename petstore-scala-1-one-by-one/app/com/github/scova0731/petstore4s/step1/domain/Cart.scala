@@ -1,7 +1,5 @@
 package com.github.scova0731.petstore4s.step1.domain
 
-import java.util
-
 import play.api.libs.json.Json
 
 
@@ -10,24 +8,11 @@ import play.api.libs.json.Json
   *
   */
 case class Cart(
-  items: Seq[CartItem] = Seq.empty //,
-
-//  @deprecated("Use items instead")
-//  itemMap2: Map[String, CartItem] = Map.empty,
-//  @deprecated("Use items instead")
-//  itemList2: List[CartItem] = List.empty
+  items: Seq[CartItem] = Seq.empty
 ) {
 
   val isEmpty = items.isEmpty
   val nonEmpty = items.nonEmpty
-
-//  @deprecated("Use items instead")
-//  private val itemMap = new java.util.concurrent.ConcurrentHashMap[String, CartItem]
-//  @deprecated("Use items instead")
-//  private val itemList = new util.ArrayList[CartItem]
-
-
-//  def getAllCartItems: util.Iterator[CartItem] = itemList.iterator
 
   def containsItemId(itemId: String): Boolean =
     items.exists(_.item.itemId == itemId)
@@ -47,20 +32,7 @@ case class Cart(
         ))
       .incrementQuantity()
 
-    replaceItem(newItem)
-  }
-
-  // TODO どうにかしたい。マップを併用するのか？
-  private def replaceItem(newItem: CartItem): Cart = {
-    if (items.exists(_.item.itemId == newItem.item.itemId))
-      Cart(items.map(ci =>
-        if (ci.item.itemId == newItem.item.itemId)
-          newItem
-        else
-          ci
-      ))
-    else
-      Cart(items :+ newItem)
+    replaceOrAddItem(newItem)
   }
 
   /**
@@ -70,7 +42,7 @@ case class Cart(
     * @return the item
     */
   def removeItemById(itemId: String): Option[Cart] = {
-    if (items.exists(_.item.itemId == itemId))
+    if (containsItemId(itemId))
       Some(Cart(items.filter(_.item.itemId != itemId)))
     else
       None
@@ -105,20 +77,23 @@ case class Cart(
     *
     * @return the sub total
     */
-  // TODO rewrite this one
-  def subTotal: BigDecimal = {
-    var subTotal = BigDecimal(0)
-//    val items = getAllCartItems
-//    while ( {
-//      items.hasNext
-//    }) {
-//      val cartItem = items.next
-//      val item = cartItem.item
-//      val listPrice = item.listPrice
-//      val quantity = BigDecimal(String.valueOf(cartItem.quantity))
-//      subTotal = subTotal.+(listPrice.*(quantity))
-//    }
-    subTotal
+  lazy val subTotal: BigDecimal = {
+    items.map { cartItem =>
+      cartItem.item.listPrice * cartItem.quantity
+    }.sum
+  }
+
+  // NOTE Added by scova0731
+  private def replaceOrAddItem(newItem: CartItem): Cart = {
+    if (containsItemId((newItem.item.itemId)))
+      Cart(items.map(ci =>
+        if (ci.item.itemId == newItem.item.itemId)
+          newItem
+        else
+          ci
+      ))
+    else
+      Cart(items :+ newItem)
   }
 }
 

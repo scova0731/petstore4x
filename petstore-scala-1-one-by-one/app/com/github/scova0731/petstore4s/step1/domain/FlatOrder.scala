@@ -61,14 +61,4 @@ case class FlatOrder(
     totalPrice = totalPrice,
     lineItems = lineItems
   )
-  
-
-//  def addLineItem(cartItem: CartItem): Unit = {
-//    val lineItem = new LineItem(lineItems.size + 1, cartItem)
-//    addLineItem(lineItem)
-//  }
-//
-//  def addLineItem(lineItem: LineItem): Unit = {
-//    lineItems = lineItems :+ lineItem
-//  }
 }

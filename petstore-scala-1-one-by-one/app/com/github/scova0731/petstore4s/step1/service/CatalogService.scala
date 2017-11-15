@@ -4,7 +4,6 @@ import scala.collection.JavaConverters._
 
 import javax.inject.Inject
 
-import com.github.scova0731.petstore4s.step1.domain
 import com.github.scova0731.petstore4s.step1.domain.{Category, Item, Product}
 import com.github.scova0731.petstore4s.step1.mapper.{CategoryMapper, ItemMapper, ProductMapper}
 
@@ -20,10 +19,10 @@ class CatalogService @Inject()(
   def getCategory(categoryId: String): Category =
     categoryMapper.getCategory(categoryId)
 
-  def getProduct(productId: String): domain.Product =
+  def getProduct(productId: String): Product =
     productMapper.getProduct(productId)
 
-  def getProductListByCategory(categoryId: String): Seq[domain.Product] =
+  def getProductListByCategory(categoryId: String): Seq[Product] =
     productMapper.getProductListByCategory(categoryId).asScala.toList
 
   /**
@@ -32,15 +31,15 @@ class CatalogService @Inject()(
     * @param keywords the keywords
     * @return the list
     */
-  def searchProductList(keywords: String): List[Product] = {
+  def searchProductList(keywords: String): Seq[Product] = {
     keywords.split("\\s+").flatMap { keyword =>
       Option(productMapper.searchProductList("%" + keyword.toLowerCase + "%").asScala.toList)
         .getOrElse(List.empty)
-    }.toList
+    }
   }
 
-  def getItemListByProduct(productId: String): List[Item] =
-    itemMapper.getItemListByProduct(productId).asScala.toList
+  def getItemListByProduct(productId: String): Seq[Item] =
+    itemMapper.getItemListByProduct(productId).asScala
 
   def getItem(itemId: String): Item =
     itemMapper.getItem(itemId)

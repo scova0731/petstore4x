@@ -14,7 +14,8 @@ case class LineItem(
   item: Item
 ) {
 
-  val total: BigDecimal = calculateTotal()
+  lazy val total: BigDecimal =
+    item.listPrice * quantity
 
   /**
     * Instantiates a new line item.
@@ -32,17 +33,17 @@ case class LineItem(
       item = cartItem.item
     )
   }
-
-  private def calculateTotal(): BigDecimal = {
-    if (item != null && item.listPrice != null)
-      item.listPrice.*(quantity)
-    else
-      null
-  }
 }
 
 object LineItem {
 
+  /**
+    * JSON deserializer for session cache
+    */
   implicit val reads = Json.reads[LineItem]
+
+  /**
+    * JSON serializer for session cache
+    */
   implicit val writes = Json.writes[LineItem]
 }

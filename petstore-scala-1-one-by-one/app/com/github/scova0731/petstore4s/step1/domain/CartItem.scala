@@ -11,7 +11,8 @@ case class CartItem(
   quantity: Int = 0
 ) {
 
-  val total: BigDecimal = calculateTotal()
+  lazy val total: BigDecimal =
+    item.listPrice * quantity
 
   def setQuantity(quantity: Int): CartItem = {
     this.copy(quantity = quantity)
@@ -19,11 +20,6 @@ case class CartItem(
 
   def incrementQuantity(): CartItem = {
     this.copy(quantity = quantity + 1)
-  }
-
-  private def calculateTotal(): BigDecimal = {
-    if (item != null && item.listPrice != null) item.listPrice.*(BigDecimal(quantity))
-    else null
   }
 }
 

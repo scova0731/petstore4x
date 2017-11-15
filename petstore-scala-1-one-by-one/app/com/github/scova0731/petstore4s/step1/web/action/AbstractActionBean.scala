@@ -42,7 +42,6 @@ trait StateHandler {
 
   // NOTE implicitly pass account to views
   implicit def implicitlyExtractAccount: Option[Account] = {
-    println("implicitlyExtractAccount")
     extractAccount()
   }
 
@@ -51,7 +50,6 @@ trait StateHandler {
 
   protected def extractAccount(): Option[Account] = {
     extractSessionId().flatMap { sessionId =>
-      //    req.session.get("account")
       cacheApi.get[String](s"$sessionId/account")
         .flatMap(jsonString =>
           Account.reads.reads(Json.parse(jsonString)).fold(
@@ -141,7 +139,7 @@ trait StateHandler {
 
   // NOTE TTL should be set in production
   protected def cacheDirectly(keyValue: (String, String)): Unit = {
-    println(s"Caching: ${keyValue._1} -> ${keyValue._2}")
+    Logger.debug(s"Caching: ${keyValue._1} -> ${keyValue._2}")
     cacheApi.set(keyValue._1, keyValue._2)
   }
 

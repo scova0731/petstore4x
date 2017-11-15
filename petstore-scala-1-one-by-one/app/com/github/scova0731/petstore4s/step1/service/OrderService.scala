@@ -20,7 +20,6 @@ class OrderService @Inject()(
     *
     * @param order the order
     */
-  //  @Transactional
   def insertOrder(order: FlatOrder): Unit = {
     val newOrder = order.copy(orderId = getNextId("ordernum"))
 
@@ -30,7 +29,6 @@ class OrderService @Inject()(
         "increment" -> lineItem.quantity
       ).asJava)
     }
-
     orderMapper.insertOrder(order)
     orderMapper.insertOrderStatus(order)
 
@@ -46,17 +44,22 @@ class OrderService @Inject()(
     * @param orderId the order id
     * @return the order
     */
-  //  @Transactional
   def getOrder(orderId: Int): Order = {
     val order = orderMapper
       .getOrder(orderId)
-      .copy(lineItems = lineItemMapper.getLineItemsByOrderId(orderId))
+      .copy(
+        lineItems = lineItemMapper.getLineItemsByOrderId(orderId).asScala
+      )
 
-    val newOrder = order.copy(lineItems = order.lineItems.map { lineItem =>
-      val item = itemMapper.getItem(lineItem.itemId)
-      val newItem = item.copy(quantity = itemMapper.getInventoryQuantity(lineItem.itemId))
-      lineItem.copy(item = newItem)
-    })
+    val newOrder = order.copy(
+      lineItems = order.lineItems.map { lineItem =>
+        lineItem.copy(
+          item = itemMapper.getItem(lineItem.itemId).copy(
+            quantity = itemMapper.getInventoryQuantity(lineItem.itemId)
+          )
+        )
+      }
+    )
 
     newOrder.toOrder
   }
@@ -76,11 +79,14 @@ class OrderService @Inject()(
     * @param name the name
     * @return the next id
     */
-  def getNextId(name: String): Int = {
+  private def getNextId(name: String): Int = {
     var sequence = new Sequence(name, -1)
     sequence = sequenceMapper.getSequence(sequence)
-    if (sequence == null) throw new RuntimeException(
-      "Error: A null sequence was returned from the database (could not get next " + name + " sequence).")
+
+    if (sequence == null)
+      throw new RuntimeException(
+        "Error: A null sequence was returned from the database (could not get next " + name + " sequence).")
+
     val parameterObject = new Sequence(name, sequence.nextId + 1)
     sequenceMapper.updateSequence(parameterObject)
     sequence.nextId

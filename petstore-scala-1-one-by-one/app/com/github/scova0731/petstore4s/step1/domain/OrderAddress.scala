@@ -15,7 +15,15 @@ case class OrderAddress(
 
 object OrderAddress {
 
+  /**
+    * JSON deserializer for session cache
+    */
+
   implicit val reads = Json.reads[OrderAddress]
+
+  /**
+    * JSON serializer for session cache
+    */
   implicit val writes = Json.writes[OrderAddress]
 
 }

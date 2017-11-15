@@ -32,52 +32,10 @@ scala-reference-architecture/clean-architecture
   - ライセンス文をコメントアウト
   - stripes:link を静的リンクに置き換え (beanclass属性は残した)
 
-beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean"
-  -> ../catalog/
-beanclass="org.mybatis.jpetstore.web.actions.CartActionBean" event="viewCart" 
-  -> ../cart/cart
-beanclass="org.mybatis.jpetstore.web.actions.CartActionBean" event="addItemToCart" 
-  -> ../cart/add-item?itemId=  (TODO まさかのGETでのカート操作)
-beanclass="org.mybatis.jpetstore.web.actions.CartActionBean" event="removeItemFromCart"
-  -> ../cart/remove-item?itemId=  (TODO まさかのGETでのカート操作)
-beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean" event="signonForm"
-  -> ../account/signon-form 
-beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean" event="signoff"
-  -> ../account/signoff
-beanclass="org.mybatis.jpetstore.web.actions.AccountActionBean" event="editAccountForm"
-  -> ../account/edit-account-form
-beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean" event="viewCategory"
-  -> ../catalog/view-category?categoryId=    
-    <stripes:param name="categoryId" value="FISH" />
-    <stripes:param name="categoryId" value="DOGS" />
-    <stripes:param name="categoryId" value="REPTILES" />
-    <stripes:param name="categoryId" value="CATS" />
-    <stripes:param name="categoryId" value="BIRDS" />
-beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean" event="viewProduct"
-  -> ../catalog/view-product?productId=
-beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean" event="viewItem"
-  -> ../catalog/view-item?itemId=
-beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean" event="newOrderForm"
-  -> ../order/checkout
-beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean" event="listOrders"
-  -> ../order/list-orders
-    
-# TODO - sessionScope っぽいもの
-"accountBean" = "true"
-"accountBean_authenticated" = "true"
-"accountBean_account_bannerOption"
-"accountBean_account_bannerName"
-"accountBean_account_firstName"
-"accountBean_account_listOption"
 
-    
 # TODO
 
-- EHCacheを使うようにする (Cookie制限超えたw)
-- Cart周りをどうするか 
-- a hrefをroutesベースに置き換える
-- session を整理する AbstractActionBeanと各HTML
-
+- Order中心にテストする 
 - ライセンス表記 (LICENSE.md と コード内の表示)
 - 外向けのREADMEにする
     
@@ -120,33 +78,6 @@ MyBatisModuleを再構成する
 [warn] Run 'evicted' to see detailed eviction warnings
 
 
-# Progress
-├── account
-│   ├─[x] EditAccountForm.scala.html
-│   ├─[x] IncludeAccountFields.scala.html
-│   ├─[x] NewAccountForm.scala.html
-│   └─[x] SignonForm.scala.html
-├── cart
-│   ├─[x] Cart.scala.html
-│   ├─[x] Checkout.scala.html
-│   └─[x] IncludeMyList.scala.html
-├── catalog
-│   ├─[x] Category.scala.html
-│   ├─[x] Item.scala.html
-│   ├─[x] Main.scala.html
-│   ├─[x] Product.scala.html
-│   └─[x] SearchProducts.scala.html
-├── common
-│   ├─[x] Error.scala.html
-│   ├─[x] IncludeBottom.scala.html
-│   └─[x] IncludeTop.scala.html
-│       <stripes:messages /> ... 消しちゃったけど、、、エラーでないときにつかう？
-└── order
-    ├─[x] ConfirmOrder.scala.html
-    ├─[x] ListOrders.scala.html たぶんOK
-    ├─[x] NewOrderForm.scala.html
-    ├─[x] ShippingForm.scala.html
-    └─[x] ViewOrder.scala.html たぶんOK
         
 
 # 改めてインストール
