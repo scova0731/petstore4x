@@ -217,8 +217,9 @@ class OrderActionBean @Inject()(
 
       case (Some(account), cart) if cart.nonEmpty =>
         val order = Order.initOrder(account, cart)
+        cache(withOrder(order))
         Ok(html.order.NewOrderForm(order, CARD_TYPE_LIST))
-          .addingToSession(withOrder(order))
+//          .addingToSession(withOrder(order))
 
       case _=>
         renderError("An order could not be created because a cart could not be found.")
@@ -258,19 +259,21 @@ class OrderActionBean @Inject()(
     orderBillAddressForm.bindFromRequest.value match {
       case Some(billAddress) =>
         val updOrder = billAddress.mergeToOrder(order)
+        cache(withOrder(updOrder))
         if (billAddress.shippingAddressRequired)
           Redirect(routes.OrderActionBean.shippingForm())
-            .addingToSession(withOrder(updOrder))
+//            .addingToSession(withOrder(updOrder))
         else
           Redirect(routes.OrderActionBean.confirmOrder())
-            .addingToSession(withOrder(updOrder))
+//            .addingToSession(withOrder(updOrder))
 
       case None =>
         orderShipAddressForm.bindFromRequest.value match {
           case Some(shipAddress) =>
             val updOrder = shipAddress.mergeToOrder(order)
+            cache(withOrder(updOrder))
             Redirect(routes.OrderActionBean.confirmOrder())
-              .addingToSession(withOrder(updOrder))
+//              .addingToSession(withOrder(updOrder))
 
           case None =>
             if (confirmationForm.bindFromRequest.value.exists(_.confirmed)) {

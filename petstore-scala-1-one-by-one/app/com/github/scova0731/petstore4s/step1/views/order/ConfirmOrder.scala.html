@@ -1,35 +1,16 @@
-@*<%--*@
-
-       @*Copyright 2010-2016 the original author or authors.*@
-
-       @*Licensed under the Apache License, Version 2.0 (the "License");*@
-       @*you may not use this file except in compliance with the License.*@
-       @*You may obtain a copy of the License at*@
-
-          @*http://www.apache.org/licenses/LICENSE-2.0*@
-
-       @*Unless required by applicable law or agreed to in writing, software*@
-       @*distributed under the License is distributed on an "AS IS" BASIS,*@
-       @*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*@
-       @*See the License for the specific language governing permissions and*@
-       @*limitations under the License.*@
-
-@*--%>*@
 @import java.time.format.DateTimeFormatter
+@import com.github.scova0731.petstore4s.step1.domain.Account
 @import com.github.scova0731.petstore4s.step1.domain.Order
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 @import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@(order: Order)(implicit messages: Messages, session: Session, flash: Flash)
+@(order: Order)(implicit messages: Messages, flash: Flash, account: Option[Account])
 
 @IncludeTop()
 
 <div id="BackLink">
-	@*<stripes:link*@
-	@*beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean">*@
-	@*Return to Main Menu</stripes:link>*@
-	<a href="../catalog/">Return to Main Menu</a>
+	<a href="@routes.CatalogActionBean.main()">Return to Main Menu</a>
 
 </div>
 
@@ -41,7 +22,6 @@ press continue...
 		<th align="center" colspan="2"><font size="4"><b>Order</b></font>
 		<br />
 		<font size="3"><b>
-			@*<fmt:formatDate value="${actionBean.order.orderDate}" pattern="yyyy/MM/dd hh:mm:ss" />*@
 			@order.orderDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"))
 		</b></font>
 		</th>
@@ -53,56 +33,48 @@ press continue...
 	<tr>
 		<td>First name:</td>
 		<td>
-			@*<c:out value="${actionBean.order.billToFirstName}" />*@
 			@order.billAddress.toFirstName
 		</td>
 	</tr>
 	<tr>
 		<td>Last name:</td>
 		<td>
-			@*<c:out value="${actionBean.order.billToLastName}" />*@
 			@order.billAddress.toLastName
 		</td>
 	</tr>
 	<tr>
 		<td>Address 1:</td>
 		<td>
-			@*<c:out value="${actionBean.order.billAddress1}" />*@
 			@order.billAddress.address1
 		</td>
 	</tr>
 	<tr>
 		<td>Address 2:</td>
 		<td>
-			@*<c:out value="${actionBean.order.billAddress2}" />*@
 			@order.billAddress.address2
 		</td>
 	</tr>
 	<tr>
 		<td>City:</td>
 		<td>
-			@*<c:out value="${actionBean.order.billCity}" />*@
 			@order.billAddress.city
 		</td>
 	</tr>
 	<tr>
 		<td>State:</td>
 		<td>
-			@*<c:out value="${actionBean.order.billState}" />*@
 			@order.billAddress.state
 		</td>
 	</tr>
 	<tr>
 		<td>Zip:</td>
 		<td>
-			@*<c:out value="${actionBean.order.billZip}" />*@
 			@order.billAddress.zip
 		</td>
 	</tr>
 	<tr>
 		<td>Country:</td>
 		<td>
-			@*<c:out value="${actionBean.order.billCountry}" />*@
 			@order.billAddress.country
 		</td>
 	</tr>
@@ -112,68 +84,53 @@ press continue...
 	<tr>
 		<td>First name:</td>
 		<td>
-			@*<c:out value="${actionBean.order.shipToFirstName}" />*@
 			@order.shipAddress.toFirstName
 		</td>
 	</tr>
 	<tr>
 		<td>Last name:</td>
 		<td>
-			@*<c:out value="${actionBean.order.shipToLastName}" />*@
 			@order.shipAddress.toLastName
 		</td>
 	</tr>
 	<tr>
 		<td>Address 1:</td>
 		<td>
-			@*<c:out value="${actionBean.order.shipAddress1}" />*@
 			@order.shipAddress.address1
 		</td>
 	</tr>
 	<tr>
 		<td>Address 2:</td>
 		<td>
-			@*<c:out value="${actionBean.order.shipAddress2}" />*@
 			@order.shipAddress.address2
 		</td>
 	</tr>
 	<tr>
 		<td>City:</td>
 		<td>
-			@*<c:out value="${actionBean.order.shipCity}" />*@
 			@order.shipAddress.city
 		</td>
 	</tr>
 	<tr>
 		<td>State:</td>
 		<td>
-			@*<c:out value="${actionBean.order.shipState}" />*@
 			@order.shipAddress.state
 		</td>
 	</tr>
 	<tr>
 		<td>Zip:</td>
 		<td>
-			@*<c:out value="${actionBean.order.shipZip}" />*@
 			@order.shipAddress.zip
 		</td>
 	</tr>
 	<tr>
 		<td>Country:</td>
 		<td>
-			@*<c:out value="${actionBean.order.shipCountry}" />*@
 			@order.shipAddress.country
 		</td>
 	</tr>
-
 </table>
 
-@*<stripes:link class="Button"*@
-	@*beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean"*@
-	@*event="newOrder">*@
-	@*<stripes:param name="confirmed" value="true" />*@
-	@*Confirm*@
-@*</stripes:link>*@
 @helper.form(action = routes.OrderActionBean.newOrder()) {
 	<input type="hidden" name="confirmed" value="true" />
 	<input type="submit" name="newOrder" value="Confirm" />

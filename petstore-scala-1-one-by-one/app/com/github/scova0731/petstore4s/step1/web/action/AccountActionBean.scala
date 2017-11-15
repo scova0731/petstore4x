@@ -78,7 +78,7 @@ class AccountActionBean @Inject()(
         val account = accountService.getAccount(form.username)
         val myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
 
-        cache(withAccount(account):_*)
+        cache(withAccount(account))
         cache(withMyList(myList))
 
         Redirect(routes.CatalogActionBean.main())
@@ -115,7 +115,7 @@ class AccountActionBean @Inject()(
         val account = accountService.getAccount(form.username)
         val myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
 
-        cache(withAccount(account):_*)
+        cache(withAccount(account))
         cache(withMyList(myList))
 
         Redirect(routes.CatalogActionBean.main())
@@ -153,7 +153,7 @@ class AccountActionBean @Inject()(
             val myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
 
             cacheDirectly(withSessionId())
-            cache(withAccount(account):_*)
+            cache(withAccount(account))
             cache(withMyList(myList))
 
             Redirect(routes.CatalogActionBean.main())

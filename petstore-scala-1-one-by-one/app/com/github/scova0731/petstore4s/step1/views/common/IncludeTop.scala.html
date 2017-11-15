@@ -1,24 +1,7 @@
-@*<%--*@
-
-@*Copyright 2010-2016 the original author or authors.*@
-
-@*Licensed under the Apache License, Version 2.0 (the "License");*@
-@*you may not use this file except in compliance with the License.*@
-@*You may obtain a copy of the License at*@
-
-@*http://www.apache.org/licenses/LICENSE-2.0*@
-
-@*Unless required by applicable law or agreed to in writing, software*@
-@*distributed under the License is distributed on an "AS IS" BASIS,*@
-@*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*@
-@*See the License for the specific language governing permissions and*@
-@*limitations under the License.*@
-
-@*--%>*@
 @import com.github.scova0731.petstore4s.step1.domain.Account
 @import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@()(implicit messages: Messages, flash: Flash, account: Option[Account] = None)
+@()(implicit messages: Messages, flash: Flash, account: Option[Account])
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -57,47 +40,27 @@
 				</a>
 					<img align="middle" src="../images/separator.gif" />
 
-					@*<c:if test="${sessionScope.accountBean == null}">*@
-						@if(account.isEmpty) {
-							<a href="../account/signon-form">
-								Sign In
-							</a>
-						}
-					@*</c:if>*@
-					@*<c:if test="${sessionScope.accountBean != null}">*@
-						@*<c:if test="${!sessionScope.accountBean.authenticated}">*@
-							@*if(account.isDefined) {*@
-
-								@*<a href="../account/signon-form">*@
-									@*Sign In*@
-								@*</a>*@
-							@*}*@
-						@*</c:if>*@
-					@*</c:if>*@
-					@*<c:if test="${sessionScope.accountBean != null}">*@
-						@*<c:if test="${sessionScope.accountBean.authenticated}">*@
-							@if(account.isDefined) {
-								<a href="../account/signoff">
-									Sign Out
-								</a>
-								<img align="middle" src="../images/separator.gif" />
-								<a href="../account/edit-account-form">
-									My Account
-								</a>
-							}
-						@*</c:if>*@
-					@*</c:if>*@
-					<img align="middle" src="../images/separator.gif" /> <a
-					href="../help.html">?</a>
+					@if(account.isEmpty) {
+						<a href="../account/signon-form">
+							Sign In
+						</a>
+					}
+					@if(account.isDefined) {
+						<a href="../account/signoff">
+							Sign Out
+						</a>
+						<img align="middle" src="../images/separator.gif" />
+						<a href="../account/edit-account-form">
+							My Account
+						</a>
+					}
+					<img align="middle" src="../images/separator.gif" />
+					<a href="../help.html">?</a>
 				</div>
 			</div>
 
 			<div id="Search">
 				<div id="SearchContent">
-					@*<stripes:form beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean">*@
-						@*<stripes:text name="keyword" size="14" />*@
-						@*<stripes:submit name="searchProducts" value="Search" />*@
-					@*</stripes:form>*@
 					@helper.form(action = routes.CatalogActionBean.searchProducts()) {
 						<input type="text" name="keyword" size="14" />
 						<input type="submit" value="Search" />
@@ -105,15 +68,15 @@
 				</div>
 			</div>
 
-			<div id="QuickLinks"><a href="../catalog/view-category?categoryId=FISH">
+			<div id="QuickLinks"><a href="@routes.CatalogActionBean.viewCategory("FISH")">
 				<img src="../images/sm_fish.gif" />
-			</a> <img src="../images/separator.gif" /> <a href="../catalog/view-category?categoryId=DOGS">
+			</a> <img src="../images/separator.gif" /> <a href="@routes.CatalogActionBean.viewCategory("DOGS")">
 				<img src="../images/sm_dogs.gif" />
-			</a> <img src="../images/separator.gif" /> <a href="../catalog/view-category?categoryId=REPTILES">
+			</a> <img src="../images/separator.gif" /> <a href="@routes.CatalogActionBean.viewCategory("REPTILES")">
 				<img src="../images/sm_reptiles.gif" />
-			</a> <img src="../images/separator.gif" /> <a href="../catalog/view-category?categoryId=CATS">
+			</a> <img src="../images/separator.gif" /> <a href="@routes.CatalogActionBean.viewCategory("CATS")">
 				<img src="../images/sm_cats.gif" />
-			</a> <img src="../images/separator.gif" /> <a href="../catalog/view-category?categoryId=BIRDS">
+			</a> <img src="../images/separator.gif" /> <a href="@routes.CatalogActionBean.viewCategory("BIRDS")">
 				<img src="../images/sm_birds.gif" />
 			</a></div>
 
@@ -123,5 +86,3 @@
 			@flash.get("message").map { msg =>
 				<div>@msg</div>
 			}.getOrElse("")
-
-			@*<stripes:messages />*@

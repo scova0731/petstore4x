@@ -25,11 +25,20 @@ object MyList {
   *
   * @author Eduardo Macarron
   */
-abstract class AbstractActionBean extends InjectedController {
+abstract class AbstractActionBean extends InjectedController with StateHandler {
   def cacheApi: SyncCacheApi
   def messagesApi: MessagesApi
 
   implicit val messages = messagesApi.preferred(Seq(Lang.defaultLang))
+
+  protected def renderError[A](message: String)(implicit req: Request[A]) =
+    BadRequest(html.common.Error(message))
+
+}
+
+
+trait StateHandler {
+  def cacheApi: SyncCacheApi
 
   // NOTE implicitly pass account to views
   implicit def implicitlyExtractAccount: Option[Account] = {
@@ -37,13 +46,13 @@ abstract class AbstractActionBean extends InjectedController {
     extractAccount()
   }
 
-  protected def extractSessionId(): Option[String] =
+  private def extractSessionId(): Option[String] =
     cacheApi.get[String]("sessionId")
 
   protected def extractAccount(): Option[Account] = {
     extractSessionId().flatMap { sessionId =>
-      //    req.session.get("accountBean")
-      cacheApi.get[String](s"$sessionId/accountBean")
+      //    req.session.get("account")
+      cacheApi.get[String](s"$sessionId/account")
         .flatMap(jsonString =>
           Account.reads.reads(Json.parse(jsonString)).fold(
             error => {
@@ -54,8 +63,8 @@ abstract class AbstractActionBean extends InjectedController {
               Some(valid)
           )
         )
-      }
     }
+  }
 
   protected def extractOrNewCart(): Cart = {
     extractSessionId().flatMap { sessionId =>
@@ -106,20 +115,11 @@ abstract class AbstractActionBean extends InjectedController {
 
 
 
-  protected val keys =
-    Seq("accountBean",
-      "accountBean_authenticated",
-      "accountBean_account_firstName",
-      "accountBean_account_bannerName", "cart", "order", "myList")
-
   protected def withSessionId(): (String, String) =
     "sessionId" -> generateUUID()
 
-  protected def withAccount(account: Account): Seq[(String, String)] =
-    Seq("accountBean"-> Account.writes.writes(account).toString,
-      "accountBean_authenticated" -> "true",
-      "accountBean_account_firstName" -> account.firstName,
-      "accountBean_account_bannerName" -> account.bannerName)
+  protected def withAccount(account: Account): (String, String) =
+    "account"-> Account.writes.writes(account).toString
 
   protected def withCart(cart: Cart): (String, String) =
     "cart" -> Cart.writes.writes(cart).toString()
@@ -154,10 +154,11 @@ abstract class AbstractActionBean extends InjectedController {
     }
   }
 
-  protected def renderError[A](message: String)(implicit req: Request[A]) =
-    BadRequest(html.common.Error(message))
+  private val keys =
+    Seq("account", "cart", "order", "myList")
 
+  private def generateUUID() =
+    UUID.randomUUID().toString
 
-  def generateUUID(): String = UUID.randomUUID().toString
 
 }

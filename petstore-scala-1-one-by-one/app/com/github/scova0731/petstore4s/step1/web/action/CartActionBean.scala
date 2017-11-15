@@ -58,8 +58,9 @@ class CartActionBean @Inject()(
         cart.addItem(item, isInStock)
       }
 
+    cache(withCart(newCart))
     Ok(html.cart.Cart(newCart, extractMyList()))
-        .addingToSession(withCart(newCart))
+//        .addingToSession(withCart(newCart))
   }
 
   /**
@@ -72,8 +73,9 @@ class CartActionBean @Inject()(
 
     cart.removeItemById(itemId) match {
       case Some(newCart) =>
+          cache(withCart(newCart))
           Ok(html.cart.Cart(newCart, extractMyList()))
-            .addingToSession(withCart(newCart))
+//            .addingToSession(withCart(newCart))
       case None =>
         renderError("Attempted to remove null CartItem from Cart.")
     }
@@ -100,8 +102,9 @@ class CartActionBean @Inject()(
           else
             cart.removeItemById(itemId).getOrElse(cart)
         }
+        cache(withCart(newCart))
         Ok(html.cart.Cart(newCart, extractMyList()))
-          .addingToSession(withCart(newCart))
+//          .addingToSession(withCart(newCart))
       }
     )
   }
@@ -110,6 +113,7 @@ class CartActionBean @Inject()(
     Ok(html.cart.Cart(extractOrNewCart(), extractMyList()))
   }
 
-//  def checkOut: ForwardResolution = new ForwardResolution(CartActionBean.CHECK_OUT)
+  // NOTE No links reach here
+  //  def checkOut: ForwardResolution = new ForwardResolution(CartActionBean.CHECK_OUT)
 
 }

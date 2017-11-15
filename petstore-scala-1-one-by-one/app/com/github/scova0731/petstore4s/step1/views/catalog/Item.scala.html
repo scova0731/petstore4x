@@ -1,37 +1,16 @@
-@*<%--*@
-
-       @*Copyright 2010-2016 the original author or authors.*@
-
-       @*Licensed under the Apache License, Version 2.0 (the "License");*@
-       @*you may not use this file except in compliance with the License.*@
-       @*You may obtain a copy of the License at*@
-
-          @*http://www.apache.org/licenses/LICENSE-2.0*@
-
-       @*Unless required by applicable law or agreed to in writing, software*@
-       @*distributed under the License is distributed on an "AS IS" BASIS,*@
-       @*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*@
-       @*See the License for the specific language governing permissions and*@
-       @*limitations under the License.*@
-
-@*--%>*@
 @import java.text.DecimalFormat
+@import com.github.scova0731.petstore4s.step1.domain.Account
 @import com.github.scova0731.petstore4s.step1.domain.Item
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@(item: Item)(implicit messages: Messages, session: Session, flash: Flash)
+@(item: Item)(implicit messages: Messages, flash: Flash, account: Option[Account])
 
 @IncludeTop()
 
 <div id="BackLink">
-	@*<stripes:link*@
-		@*beanclass="org.mybatis.jpetstore.web.actions.CatalogActionBean"*@
-		@*event="viewProduct">*@
-		@*<stripes:param name="productId" value="${actionBean.product.productId}" />*@
-		@*Return to ${actionBean.product.productId}*@
-	@*</stripes:link>*@
-  <a href="../catalog/view-product?productId=@item.product.productId">Return to @item.product.productId</a>
+  <a href="@routes.CatalogActionBean.viewProduct(item.product.productId)">Return to @item.product.productId</a>
 </div>
 
 <div id="Catalog">
@@ -39,39 +18,26 @@
 <table>
 	<tr>
 		<td>
-			@*${actionBean.product.description}*@
       @Html(item.product.description)
 		</td>
 	</tr>
 	<tr>
 		<td><b>
-			@*${actionBean.item.itemId}*@
 			@item.itemId
 		</b></td>
 	</tr>
 	<tr>
 		<td><b><font size="4">
-			@*${actionBean.item.attribute1}*@
-			@*${actionBean.item.attribute2} ${actionBean.item.attribute3}*@
-			@*${actionBean.item.attribute4} ${actionBean.item.attribute5}*@
-			@*${actionBean.product.name}*@
 			@item.attribute1 @item.attribute2 @item.attribute3 @item.attribute4 @item.attribute5 @item.product.name
 		</font></b></td>
 	</tr>
 	<tr>
 		<td>
-			@*${actionBean.product.name}*@
 			@item.product.name
 		</td>
 	</tr>
 	<tr>
 		<td>
-			@*<c:if test="${actionBean.item.quantity <= 0}">*@
-        @*Back ordered.*@
-      @*</c:if>*@
-			@*<c:if test="${actionBean.item.quantity > 0}">*@
-      	@*${actionBean.item.quantity} in stock.*@
-	  	@*</c:if>*@
 			@if(item.quantity <= 0) {
 				Back ordered.
 			} else {
@@ -81,20 +47,13 @@
 	</tr>
 	<tr>
 		<td>
-			@*<fmt:formatNumber value="${actionBean.item.listPrice}" pattern="$#,##0.00" />*@
 			@(new DecimalFormat("$#,##0.00").format(item.listPrice))
 		</td>
 	</tr>
 
 	<tr>
 		<td>
-			@*<stripes:link class="Button"*@
-			@*beanclass="org.mybatis.jpetstore.web.actions.CartActionBean"*@
-			@*event="addItemToCart">*@
-			@*<stripes:param name="workingItemId" value="${actionBean.item.itemId}" />*@
-       	@*Add to Cart*@
-       @*</stripes:link>*@
-			<a href="../cart/add-item?itemId=@item.itemId" class="Button">Add to Cart</a>
+			<a href="@routes.CartActionBean.addItemToCart(item.itemId)" class="Button">Add to Cart</a>
 		</td>
 	</tr>
 </table>

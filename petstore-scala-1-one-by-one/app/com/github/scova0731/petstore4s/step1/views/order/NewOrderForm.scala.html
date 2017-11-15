@@ -1,32 +1,15 @@
-@*<%--*@
-
-@*Copyright 2010-2016 the original author or authors.*@
-
-@*Licensed under the Apache License, Version 2.0 (the "License");*@
-@*you may not use this file except in compliance with the License.*@
-@*You may obtain a copy of the License at*@
-
-@*http://www.apache.org/licenses/LICENSE-2.0*@
-
-@*Unless required by applicable law or agreed to in writing, software*@
-@*distributed under the License is distributed on an "AS IS" BASIS,*@
-@*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*@
-@*See the License for the specific language governing permissions and*@
-@*limitations under the License.*@
-
-@*--%>*@
+@import com.github.scova0731.petstore4s.step1.domain.Account
 @import com.github.scova0731.petstore4s.step1.domain.Order
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
 @import com.github.scova0731.petstore4s.step1.web.action.routes
 
-@(order: Order, cardTypes: Seq[String])(implicit messages: Messages, session: Session, flash: Flash)
+@(order: Order, cardTypes: Seq[String])(implicit messages: Messages, flash: Flash, account: Option[Account])
 
 @IncludeTop()
 
 <div id="Catalog">
 	@helper.form(action = routes.OrderActionBean.newOrder()) {
-	@*<stripes:form beanclass="org.mybatis.jpetstore.web.actions.OrderActionBean">*@
 
 	<table>
 		<tr>
@@ -35,27 +18,23 @@
 		<tr>
 			<td>Card Type:</td>
 			<td>
-				@*<stripes:select name="order.cardType">*@
 				<select name="cardType">
 					<stripes:options-collection collection="${actionBean.creditCardTypes}" />
 					@for(cardType <- cardTypes) {
 						<option value="@cardType">@cardType</option>
 					}
-					@*</stripes:select>*@
 				</select>
 			</td>
 		</tr>
 		<tr>
 			<td>Card Number:</td>
 			<td>
-				@*<stripes:text name="order.creditCard" />*@
 				<input type="text" name="creditCard" value="@order.creditCard" />
 				* Use a fake number!</td>
 		</tr>
 		<tr>
 			<td>Expiry Date (MM/YYYY):</td>
 			<td>
-				@*<stripes:text name="order.expiryDate" />*@
 				<input type="text" name="expiryDate" value="@order.expiryDate" />
 			</td>
 		</tr>
@@ -66,73 +45,62 @@
 		<tr>
 			<td>First name:</td>
 			<td>
-				@*<stripes:text name="order.billToFirstName" />*@
 				<input type="text" name="billToFirstName" value="@order.billAddress.toFirstName" />
 			</td>
 		</tr>
 		<tr>
 			<td>Last name:</td>
 			<td>
-				@*<stripes:text name="order.billToLastName" />*@
 				<input type="text" name="billToLastName" value="@order.billAddress.toLastName" />
 			</td>
 		</tr>
 		<tr>
 			<td>Address 1:</td>
 			<td>
-				@*<stripes:text size="40" name="order.billAddress1" />*@
 				<input type="text" size="40" name="billAddress1" value="@order.billAddress.address1"/>
 			</td>
 		</tr>
 		<tr>
 			<td>Address 2:</td>
 			<td>
-				@*<stripes:text size="40" name="order.billAddress2" />*@
 				<input type="text" size="40" name="billAddress2" value="@order.billAddress.address2"/>
 			</td>
 		</tr>
 		<tr>
 			<td>City:</td>
 			<td>
-				@*<stripes:text name="order.billCity" />*@
 				<input type="text" name="billCity" value="@order.billAddress.city" />
 			</td>
 		</tr>
 		<tr>
 			<td>State:</td>
 			<td>
-				@*<stripes:text size="4" name="order.billState" />*@
 				<input type="text" size="4" name="billState" value="@order.billAddress.state" />
 			</td>
 		</tr>
 		<tr>
 			<td>Zip:</td>
 			<td>
-				@*<stripes:text size="10" name="order.billZip" />*@
 				<input type="text" size="10" name="billZip" value="@order.billAddress.zip" />
 			</td>
 		</tr>
 		<tr>
 			<td>Country:</td>
 			<td>
-				@*<stripes:text size="15" name="order.billCountry" />*@
 				<input type="text" size="15" name="billCountry" value="@order.billAddress.country" />
 			</td>
 		</tr>
 
 		<tr>
 			<td colspan=2>
-				@*<stripes:checkbox name="shippingAddressRequired" />*@
 				<input type="checkbox" name="shippingAddressRequired" value="true" />
 				Ship to different address...</td>
 		</tr>
 
 	</table>
 
-	@*<stripes:submit name="newOrder" value="Continue" />*@
 	<input type="submit" name="newOrder" value="Continue" />
 
-	@*</stripes:form>*@
 	}
 </div>
 
