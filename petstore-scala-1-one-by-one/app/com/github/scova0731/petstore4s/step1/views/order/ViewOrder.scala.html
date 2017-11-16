@@ -1,5 +1,5 @@
 @import java.text.DecimalFormat
-@import java.time.format.DateTimeFormatter
+@import java.text.SimpleDateFormat
 @import com.github.scova0731.petstore4s.step1.domain.Account
 @import com.github.scova0731.petstore4s.step1.domain.Order
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
@@ -19,8 +19,8 @@
 <table>
 	<tr>
 		<th align="center" colspan="2">
-			Order #${actionBean.order.orderId}
-			@order.orderDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"))
+			Order #@order.orderId
+			@(new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(order.orderDate))
 		</th>
 	</tr>
 	<tr>

@@ -17,6 +17,10 @@ case class LineItem(
   lazy val total: BigDecimal =
     item.listPrice * quantity
 
+  // NOTE Java conversion for MyBatis
+  def getUnitPrice(): java.math.BigDecimal =
+    unitPrice.underlying()
+
   /**
     * Instantiates a new line item.
     *
@@ -33,6 +37,16 @@ case class LineItem(
       item = cartItem.item
     )
   }
+
+  def this(
+    orderId: java.lang.Integer,
+    lineNumber: java.lang.Integer,
+    itemId: String,
+    quantity: java.lang.Integer,
+    unitPrice: java.math.BigDecimal
+  ) = this (
+    orderId, lineNumber, quantity, itemId, unitPrice, null
+  )
 }
 
 object LineItem {

@@ -1,4 +1,4 @@
-@import java.time.format.DateTimeFormatter
+@import java.text.SimpleDateFormat
 @import com.github.scova0731.petstore4s.step1.domain.Account
 @import com.github.scova0731.petstore4s.step1.domain.Order
 @import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
@@ -22,7 +22,7 @@ press continue...
 		<th align="center" colspan="2"><font size="4"><b>Order</b></font>
 		<br />
 		<font size="3"><b>
-			@order.orderDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"))
+			@(new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(order.orderDate))
 		</b></font>
 		</th>
 	</tr>

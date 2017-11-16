@@ -20,8 +20,14 @@ class OrderService @Inject()(
     *
     * @param order the order
     */
-  def insertOrder(order: FlatOrder): Unit = {
-    val newOrder = order.copy(orderId = getNextId("ordernum"))
+  def insertOrder(order: FlatOrder): Int = {
+    val newOrderId = getNextId("ordernum")
+    val newOrder = order.copy(
+      orderId = newOrderId,
+      lineItems = order.lineItems.map(
+        _.copy(orderId = newOrderId)
+      )
+    )
 
     newOrder.lineItems.foreach { lineItem =>
       itemMapper.updateInventoryQuantity(Map(
@@ -29,13 +35,15 @@ class OrderService @Inject()(
         "increment" -> lineItem.quantity
       ).asJava)
     }
-    orderMapper.insertOrder(order)
-    orderMapper.insertOrderStatus(order)
 
-    order.lineItems.foreach { lineItem =>
-      val newLineItem = lineItem.copy(orderId = newOrder.orderId)
-      lineItemMapper.insertLineItem(newLineItem)
+    orderMapper.insertOrder(newOrder)
+    orderMapper.insertOrderStatus(newOrder)
+
+    newOrder.lineItems.foreach { lineItem =>
+      lineItemMapper.insertLineItem(lineItem)
     }
+
+    newOrder.orderId
   }
 
   /**
@@ -79,8 +87,8 @@ class OrderService @Inject()(
     * @param name the name
     * @return the next id
     */
-  private def getNextId(name: String): Int = {
-    var sequence = new Sequence(name, -1)
+  def getNextId(name: String): Int = {
+    var sequence = Sequence(name, -1)
     sequence = sequenceMapper.getSequence(sequence)
 
     if (sequence == null)

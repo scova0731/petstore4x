@@ -26,6 +26,6 @@ GET    /jpetstore/order/shipping-form       com.github.scova0731.petstore4s.step
 GET    /jpetstore/order/confirm-order       com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.confirmOrder()
 GET    /jpetstore/order/view-order          com.github.scova0731.petstore4s.step1.web.action.OrderActionBean.viewOrder(orderId: Int)
 
-GET    /jpetstore/                  controllers.HomeController.index
+GET    /jpetstore/                          com.github.scova0731.petstore4s.step1.web.IndexController.index()
 
-GET    /jpetstore/*file             controllers.Assets.at(path="/public", file)
+GET    /jpetstore/*file                     controllers.Assets.at(path="/public", file)

@@ -1,6 +1,7 @@
 package com.github.scova0731.petstore4s.step1.domain
 
 import java.time.OffsetDateTime
+import java.util.Date
 
 import play.api.libs.json.Json
 
@@ -11,7 +12,7 @@ import play.api.libs.json.Json
 case class Order(
   orderId: Int = 0,  // Temporary ID
   username : String,
-  orderDate : OffsetDateTime,
+  orderDate : Date,
   shipAddress : OrderAddress,
   billAddress : OrderAddress,
   totalPrice : BigDecimal,
@@ -24,7 +25,8 @@ case class Order(
   lineItems : Seq[LineItem]
 ) {
 
-  def toFlatOrder: FlatOrder = FlatOrder(
+  def toFlatOrder: FlatOrder = new FlatOrder(
+    orderId = orderId,
     username = username,
     orderDate = orderDate,
     shipAddress1 = shipAddress.address1,
@@ -44,6 +46,12 @@ case class Order(
     billToLastName = billAddress.toLastName,
     shipToFirstName = shipAddress.toFirstName,
     shipToLastName = shipAddress.toLastName,
+    creditCard = creditCard,
+    expiryDate = expiryDate,
+    cardType = cardType,
+    courier = courier,
+    locale = locale,
+    status = status,
     lineItems = lineItems
   )
 }
@@ -69,7 +77,7 @@ object Order {
   def initOrder(account: Account, cart: Cart): Order =
     Order(
       username = account.username,
-      orderDate = OffsetDateTime.now(),
+      orderDate = new Date(),
       shipAddress = OrderAddress(
         toFirstName = account.firstName,
         toLastName = account.lastName,

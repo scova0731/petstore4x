@@ -152,7 +152,7 @@ class AccountActionBean @Inject()(
           case Some(account) =>
             val myList = catalogService.getProductListByCategory(account.favouriteCategoryId)
 
-            cacheDirectly(withSessionId())
+//            cacheDirectly(withSessionId())
             cache(withAccount(account))
             cache(withMyList(myList))
 

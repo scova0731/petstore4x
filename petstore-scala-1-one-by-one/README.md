@@ -4,25 +4,49 @@ scala-reference-architecture/clean-architecture
 ※ あとで書き直す
 
 
-# シナリオ
+# Overviww
 
 - ビューを含まない。伝統的なWebアプリケーションや
 
-# Keywords
+## Changes
 
-- Controller (some of InterfaceAdapter)
-- Presenter (some of InterfaceAdapter)
-- Service (UseCase, Story ...)
-- Repository (Store, )
-- Gateway and Infrastructure (some of InterfaceAdapter)
+  - MyBatis版のjpetstore をScalaに移植
+  - なるべく名称や構造を保持しつつも、Scalaの道から外れない程度に改変する
+    - ドメインモデルをイミュータブルにする
+    - ActionBean に状態を持たない
+  - Play を利用
+    - Spring から Play の DI 機構 (Guiceベース) へ
+    - JSP/stripes から Twirl へ
+  - 大きな変更点
+    − FlatOrder と Order + OrderAddress とに分離。22カラム問題に対応するため
+    − StateHander コードを追加。ActionBeanのステートフルネス相当の動きをさせるため
 
-# Decision
+## Pending issues
 
-- Put view controller ...
+  - よくわかってないところ
+    − MyBatisのトランザクション
 
-# References
 
-- `./mvnw cargo:run -P tomcat85`
+## Getting Started
+
+1. Install JVM
+  - Manually download: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+  - Check if it's installed: `java --version`
+
+2. Run sbt
+  
+```
+./sbt run
+```
+
+3. Open in your browser
+
+```
+http://localhost:9000/jpetstore/
+
+```
+
+
   
   
 # したこと(あとで整理)
@@ -36,6 +60,11 @@ scala-reference-architecture/clean-architecture
 # TODO
 
 - Order中心にテストする 
+  - [x] removeItem
+  - [x] updateCart
+  - [x] confirm
+  - [x] 注文確定後にカートをクリア
+  - [x] orderIdがセットされない (どこかがまだおかしい。あ、DeepにOrderIdをセットかな？)
 - ライセンス表記 (LICENSE.md と コード内の表示)
 - 外向けのREADMEにする
     
@@ -84,6 +113,16 @@ MyBatisModuleを再構成する
 ```
 $ brew install sbt
 $ sbt new playframework/play-scala-seed.g8
+```
+
+- `./mvnw cargo:run -P tomcat85`
+
+
+- Controller (some of InterfaceAdapter)
+- Presenter (some of InterfaceAdapter)
+- Service (UseCase, Story ...)
+- Repository (Store, )
+- Gateway and Infrastructure (some of InterfaceAdapter)
 
 
 # バリエーション

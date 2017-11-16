@@ -45,76 +45,68 @@ trait StateHandler {
     extractAccount()
   }
 
-  private def extractSessionId(): Option[String] =
-    cacheApi.get[String]("sessionId")
+  private def getOrNewSessionId(): String = {
+    cacheApi.get[String]("sessionId").getOrElse {
+      val sessionId = generateUUID()
+      cacheDirectly("sessionId" -> sessionId)
+      sessionId
+    }
+  }
 
   protected def extractAccount(): Option[Account] = {
-    extractSessionId().flatMap { sessionId =>
-      cacheApi.get[String](s"$sessionId/account")
-        .flatMap(jsonString =>
-          Account.reads.reads(Json.parse(jsonString)).fold(
-            error => {
-              Logger.error(s"Account JSON parse error: ${error.toString()}")
-              None
-            },
-            valid =>
-              Some(valid)
-          )
+    cacheApi.get[String](s"${getOrNewSessionId()}/account")
+      .flatMap(jsonString =>
+        Account.reads.reads(Json.parse(jsonString)).fold(
+          error => {
+            Logger.error(s"Account JSON parse error: ${error.toString()}")
+            None
+          },
+          valid =>
+            Some(valid)
         )
-    }
+      )
   }
 
   protected def extractOrNewCart(): Cart = {
-    extractSessionId().flatMap { sessionId =>
-      cacheApi.get[String](s"$sessionId/cart")
-        .map(jsonString =>
-          Cart.reads.reads(Json.parse(jsonString)).fold(
-            error => {
-              Logger.error(s"Cart JSON parse error: ${error.toString()}")
-              Cart()
-            },
-            valid => valid
-          )
+    cacheApi.get[String](s"${getOrNewSessionId()}/cart")
+      .map(jsonString =>
+        Cart.reads.reads(Json.parse(jsonString)).fold(
+          error => {
+            Logger.error(s"Cart JSON parse error: ${error.toString()}")
+            Cart()
+          },
+          valid => valid
         )
-    }.getOrElse(Cart())
-  }
+      )
+  }.getOrElse(Cart())
 
   protected def extractOrder(): Option[Order] = {
-    extractSessionId().flatMap { sessionId =>
-      cacheApi.get[String](s"$sessionId/order")
-        .flatMap(jsonString =>
-          Order.reads.reads(Json.parse(jsonString)).fold(
-            error => {
-              Logger.error(s"Order JSON parse error: ${error.toString()}")
-              None
-            },
-            valid =>
-              Some(valid)
-          )
+    cacheApi.get[String](s"${getOrNewSessionId()}/order")
+      .flatMap(jsonString =>
+        Order.reads.reads(Json.parse(jsonString)).fold(
+          error => {
+            Logger.error(s"Order JSON parse error: ${error.toString()}")
+            None
+          },
+          valid =>
+            Some(valid)
         )
-    }
+      )
   }
 
   protected def extractMyList(): Option[Seq[Product]] = {
-    extractSessionId().flatMap { sessionId =>
-      cacheApi.get[String](s"$sessionId/myList")
-        .flatMap { jsonString =>
-          MyList.reads.reads(Json.parse(jsonString)).fold(
-            error => {
-              Logger.error(s"MyList JSON parse error: ${error.toString()}")
-              None
-            },
-            valid =>
-              Some(valid.products)
-          )
-        }
-    }
+    cacheApi.get[String](s"${getOrNewSessionId()}/myList")
+      .flatMap { jsonString =>
+        MyList.reads.reads(Json.parse(jsonString)).fold(
+          error => {
+            Logger.error(s"MyList JSON parse error: ${error.toString()}")
+            None
+          },
+          valid =>
+            Some(valid.products)
+        )
+      }
   }
-
-
-
-  protected def withSessionId(): (String, String) =
-    "sessionId" -> generateUUID()
 
   protected def withAccount(account: Account): (String, String) =
     "account"-> Account.writes.writes(account).toString
@@ -130,10 +122,9 @@ trait StateHandler {
 
   // NOTE TTL should be set in production
   protected def cache(keyValues: (String, String)*): Unit = {
-    extractSessionId().foreach { sessionId =>
-      keyValues.foreach { case (k, v) =>
-        cacheDirectly(s"$sessionId/$k" -> v)
-      }
+    val sessionId = getOrNewSessionId()
+    keyValues.foreach { case (k, v) =>
+      cacheDirectly(s"$sessionId/$k" -> v)
     }
   }
 
@@ -144,12 +135,16 @@ trait StateHandler {
   }
 
   protected def removeAllCache(): Unit = {
-    extractSessionId().foreach { sessionId =>
-      keys.foreach { key =>
-        cacheApi.remove(s"$sessionId/$key")
-      }
-      cacheApi.remove("sessionId")
+    val sessionId = getOrNewSessionId()
+    keys.foreach { key =>
+      cacheApi.remove(s"$sessionId/$key")
     }
+    cacheApi.remove("sessionId")
+  }
+
+  protected def removeCache(key: String): Unit = {
+    val sessionId = getOrNewSessionId()
+    cacheApi.remove(s"$sessionId/$key")
   }
 
   private val keys =
