@@ -1,24 +1,25 @@
 jpetstoreを題材にしたリファレンス実装
 =============
 
-※ WIP です！
-
-- petstore-scala-1-one-by-one
-  - MyBatis版のjpetstore をScalaに移植
-  - なるべく名称や構造を保持しつつも、Scalaの道から外れない程度に改変する
-    - ドメインモデルをイミュータブルにする
-    - ActionBean に状態を持たない
-  - Play を利用
+- Step.1: petstore-scala-1-one-by-one
+  - [MyBatis 版の jpetstore](https://github.com/mybatis/jpetstore-6) を Scala に移植
+  - 比較しやすいよう Mybatis 版の名称や構造を極力保持しつつも、最低限の Scala の作法を守る
+    - クラスをイミュータブルにする (`var` を使用しない)
+    - ステートフルな ActionBean も取り除く
+  - PlayFramework を利用
     - Spring から Play の DI 機構 (Guiceベース) へ
-    - JSP/stripes から Twirl へ
-  - 大きな変更点
+    - JSP/stripes から `Twirl` へ
+      - ディレクティブ(page, include, taglib) は全て削除
+      - ライセンス文をコメントアウト
+      - stripes:link をroutesに置き換え (beanclass属性は残した)
+    - ステートは、 リクエスト毎に `Ehcache` キャッシュから再構築
+  - その他の変更点
     − FlatOrder と Order + OrderAddress とに分離。22カラム問題に対応するため
-    − StateHander コードを追加。ActionBeanのステートフルネス相当の動きをさせるため
-  - よくわかってないところ
-    − MyBatisのトランザクション
-- petstore-scala-2-clean
-  - Clean Architecture をベースとした構造の改変
-  - それっぽい名称
-  - 依存関係を矯正するためにプロジェクトを分割
-- petstore-scala-2-clean-and-simplified
-  - Clean Architecture の崩し
+    − StateHander コードを追加。ActionBean の状態保持相当の動きをさせるため
+  - 未完了
+    − DBトランザクションは、 `＠Transactional` を除いたまま
+- (WIP) Step.2: petstore-scala-2-clean
+  - Clean Architecture をベースとしたレイヤー構造の改変
+  - 更にプロジェクトを分割して、依存関係を明確にする
+- (TODO) Step.3: petstore-scala-2-simple
+  - Clean Architecture のものをシンプルにする
