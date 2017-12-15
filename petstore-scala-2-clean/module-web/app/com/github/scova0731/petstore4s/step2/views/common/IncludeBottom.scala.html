@@ -1,0 +1,23 @@
+@import com.github.scova0731.petstore4s.step2.domain.Account
+
+@()(implicit messages: Messages, flash: Flash, account: Option[Account])
+
+</div>
+
+<div id="Footer">
+
+<div id="PoweredBy">
+	&nbsp;<a href="http://www.mybatis.org">www.mybatis.org</a>
+	<span style="color:#666">(arranged by &nbsp;<a href="https://github.com/scova0731" style="color:#666">github.com/scova0731</a>)</span>
+</div>
+
+<div id="Banner">
+	@if(account.isDefined) {
+		@Html(account.get.bannerName)
+	}
+</div>
+
+</div>
+
+</body>
+</html>

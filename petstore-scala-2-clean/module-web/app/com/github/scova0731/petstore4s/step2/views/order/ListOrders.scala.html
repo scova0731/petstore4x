@@ -1,0 +1,39 @@
+@import java.text.DecimalFormat
+@import java.text.SimpleDateFormat
+@import com.github.scova0731.petstore4s.step2.domain.Account
+@import com.github.scova0731.petstore4s.step2.domain.Order
+@import com.github.scova0731.petstore4s.step2.views.html.common.IncludeTop
+@import com.github.scova0731.petstore4s.step2.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step2.web.action.routes
+
+@(orders: Seq[Order])(implicit messages: Messages, flash: Flash, account: Option[Account])
+
+@IncludeTop()
+
+<h2>My Orders</h2>
+
+<table>
+	<tr>
+		<th>Order ID</th>
+		<th>Date</th>
+		<th>Total Price</th>
+	</tr>
+
+	@for(order <- orders) {
+		<tr>
+			<td>
+				<a href="@routes.OrderActionBean.viewOrder(order.orderId)">@order.orderId</a>
+			</td>
+			<td>
+				@(new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(order.orderDate))
+			</td>
+			<td>
+				@(new DecimalFormat("$#,##0.00").format(order.totalPrice))
+			</td>
+		</tr>
+	}
+</table>
+
+@IncludeBottom()
+
+
