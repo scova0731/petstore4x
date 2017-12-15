@@ -1,0 +1,107 @@
+@import com.github.scova0731.petstore4s.step1.domain.Account
+@import com.github.scova0731.petstore4s.step1.domain.Order
+@import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
+@import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step1.web.action.routes
+
+@(order: Order, cardTypes: Seq[String])(implicit messages: Messages, flash: Flash, account: Option[Account])
+
+@IncludeTop()
+
+<div id="Catalog">
+	@helper.form(action = routes.OrderActionBean.newOrder()) {
+
+	<table>
+		<tr>
+			<th colspan=2>Payment Details</th>
+		</tr>
+		<tr>
+			<td>Card Type:</td>
+			<td>
+				<select name="cardType">
+					<stripes:options-collection collection="${actionBean.creditCardTypes}" />
+					@for(cardType <- cardTypes) {
+						<option value="@cardType">@cardType</option>
+					}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Card Number:</td>
+			<td>
+				<input type="text" name="creditCard" value="@order.creditCard" />
+				* Use a fake number!</td>
+		</tr>
+		<tr>
+			<td>Expiry Date (MM/YYYY):</td>
+			<td>
+				<input type="text" name="expiryDate" value="@order.expiryDate" />
+			</td>
+		</tr>
+		<tr>
+			<th colspan=2>Billing Address</th>
+		</tr>
+
+		<tr>
+			<td>First name:</td>
+			<td>
+				<input type="text" name="billToFirstName" value="@order.billAddress.toFirstName" />
+			</td>
+		</tr>
+		<tr>
+			<td>Last name:</td>
+			<td>
+				<input type="text" name="billToLastName" value="@order.billAddress.toLastName" />
+			</td>
+		</tr>
+		<tr>
+			<td>Address 1:</td>
+			<td>
+				<input type="text" size="40" name="billAddress1" value="@order.billAddress.address1"/>
+			</td>
+		</tr>
+		<tr>
+			<td>Address 2:</td>
+			<td>
+				<input type="text" size="40" name="billAddress2" value="@order.billAddress.address2"/>
+			</td>
+		</tr>
+		<tr>
+			<td>City:</td>
+			<td>
+				<input type="text" name="billCity" value="@order.billAddress.city" />
+			</td>
+		</tr>
+		<tr>
+			<td>State:</td>
+			<td>
+				<input type="text" size="4" name="billState" value="@order.billAddress.state" />
+			</td>
+		</tr>
+		<tr>
+			<td>Zip:</td>
+			<td>
+				<input type="text" size="10" name="billZip" value="@order.billAddress.zip" />
+			</td>
+		</tr>
+		<tr>
+			<td>Country:</td>
+			<td>
+				<input type="text" size="15" name="billCountry" value="@order.billAddress.country" />
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan=2>
+				<input type="checkbox" name="shippingAddressRequired" value="true" />
+				Ship to different address...</td>
+		</tr>
+
+	</table>
+
+	<input type="submit" name="newOrder" value="Continue" />
+
+	}
+</div>
+
+@IncludeBottom()

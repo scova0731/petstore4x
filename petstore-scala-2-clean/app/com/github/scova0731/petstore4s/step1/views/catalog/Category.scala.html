@@ -1,0 +1,40 @@
+@import com.github.scova0731.petstore4s.step1.domain.Account
+@import com.github.scova0731.petstore4s.step1.domain.Category
+@import com.github.scova0731.petstore4s.step1.domain.Product
+@import com.github.scova0731.petstore4s.step1.views.html.common.IncludeTop
+@import com.github.scova0731.petstore4s.step1.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step1.web.action.routes
+
+@(products: Seq[Product], category: Category)(implicit messages: Messages, flash: Flash, account: Option[Account])
+
+@IncludeTop()
+
+<div id="BackLink">
+	<a href="@routes.CatalogActionBean.main()">Return to Main Menu</a>
+</div>
+
+<div id="Catalog">
+
+<h2>
+	@category.name
+</h2>
+
+<table>
+	<tr>
+		<th>Product ID</th>
+		<th>Name</th>
+	</tr>
+	@for(product <- products) {
+		<tr>
+			<td>
+				<a href="@routes.CatalogActionBean.viewProduct(product.productId)">@product.productId</a>
+			</td>
+			<td>@product.name</td>
+		</tr>
+	}
+</table>
+
+</div>
+
+@IncludeBottom()
+

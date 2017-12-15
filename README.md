@@ -11,15 +11,15 @@ jpetstoreを題材にしたリファレンス実装
     - JSP/stripes から `Twirl` へ
       - ディレクティブ(page, include, taglib) は全て削除
       - ライセンス文をコメントアウト
-      - stripes:link をroutesに置き換え (beanclass属性は残した)
+      - stripes:link を `routes` に置き換え
     - ステートは、 リクエスト毎に `Ehcache` キャッシュから再構築
   - その他の変更点
-    − FlatOrder と Order + OrderAddress とに分離。22カラム問題に対応するため
-    − StateHander コードを追加。ActionBean の状態保持相当の動きをさせるため
+    - FlatOrder と Order + OrderAddress とに分離。22カラム問題に対応するため
+    - StateHander コードを追加。ActionBean の状態保持相当の動きをさせるため
   - 未完了
-    − DBトランザクションは、 `＠Transactional` を除いたまま
+    - DBトランザクションは、 `＠Transactional` を除いたまま
 - (WIP) Step.2: petstore-scala-2-clean
   - Clean Architecture をベースとしたレイヤー構造の改変
   - 更にプロジェクトを分割して、依存関係を明確にする
-- (TODO) Step.3: petstore-scala-2-simple
+- (TODO) Step.3: petstore-scala-3-simple
   - Clean Architecture のものをシンプルにする
