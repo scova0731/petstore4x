@@ -5,25 +5,25 @@ import scala.collection.JavaConverters._
 import javax.inject.Inject
 
 import com.github.scova0731.petstore4s.step2.domain.{Category, Item, Product}
-import com.github.scova0731.petstore4s.step2.mapper.{CategoryMapper, ItemMapper, ProductMapper}
+import com.github.scova0731.petstore4s.step2.repository.{CategoryRepository, ItemRepository, ProductRepository}
 
 class CatalogService @Inject()(
-  categoryMapper:CategoryMapper,
-  itemMapper: ItemMapper,
-  productMapper: ProductMapper
+  repo:CategoryRepository,
+  itemRepo: ItemRepository,
+  productRepo: ProductRepository
 ) {
 
   def getCategoryList: Seq[Category] =
-    categoryMapper.getCategoryList
+    repo.getCategoryList
 
   def getCategory(categoryId: String): Category =
-    categoryMapper.getCategory(categoryId)
+    repo.getCategory(categoryId)
 
   def getProduct(productId: String): Product =
-    productMapper.getProduct(productId)
+    productRepo.getProduct(productId)
 
   def getProductListByCategory(categoryId: String): Seq[Product] =
-    productMapper.getProductListByCategory(categoryId).asScala.toList
+    productRepo.getProductListByCategory(categoryId).asScala.toList
 
   /**
     * Search product list.
@@ -33,17 +33,17 @@ class CatalogService @Inject()(
     */
   def searchProductList(keywords: String): Seq[Product] = {
     keywords.split("\\s+").flatMap { keyword =>
-      Option(productMapper.searchProductList("%" + keyword.toLowerCase + "%").asScala.toList)
+      Option(productRepo.searchProductList("%" + keyword.toLowerCase + "%").asScala.toList)
         .getOrElse(List.empty)
     }
   }
 
   def getItemListByProduct(productId: String): Seq[Item] =
-    itemMapper.getItemListByProduct(productId).asScala
+    itemRepo.getItemListByProduct(productId).asScala
 
   def getItem(itemId: String): Item =
-    itemMapper.getItem(itemId)
+    itemRepo.getItem(itemId)
 
   def isItemInStock(itemId: String): Boolean =
-    itemMapper.getInventoryQuantity(itemId) > 0
+    itemRepo.getInventoryQuantity(itemId) > 0
 }

@@ -5,13 +5,13 @@ import javax.inject.Inject
 import scala.collection.JavaConverters._
 
 import com.github.scova0731.petstore4s.step2.domain.{FlatOrder, Order, Sequence}
-import com.github.scova0731.petstore4s.step2.mapper.{ItemMapper, LineItemMapper, OrderMapper, SequenceMapper}
+import com.github.scova0731.petstore4s.step2.repository.{ItemRepository, LineItemRepository, OrderRepository, SequenceRepository}
 
 class OrderService @Inject()(
-  itemMapper: ItemMapper,
-  orderMapper: OrderMapper,
-  sequenceMapper: SequenceMapper,
-  lineItemMapper: LineItemMapper
+  repo: OrderRepository,
+  itemRepo: ItemRepository,
+  sequenceRepo: SequenceRepository,
+  lineItemRepo: LineItemRepository
 ) {
 
 
@@ -30,17 +30,17 @@ class OrderService @Inject()(
     )
 
     newOrder.lineItems.foreach { lineItem =>
-      itemMapper.updateInventoryQuantity(Map(
+      itemRepo.updateInventoryQuantity(Map(
         "itemId" -> lineItem.itemId,
         "increment" -> lineItem.quantity
       ).asJava)
     }
 
-    orderMapper.insertOrder(newOrder)
-    orderMapper.insertOrderStatus(newOrder)
+    repo.insertOrder(newOrder)
+    repo.insertOrderStatus(newOrder)
 
     newOrder.lineItems.foreach { lineItem =>
-      lineItemMapper.insertLineItem(lineItem)
+      lineItemRepo.insertLineItem(lineItem)
     }
 
     newOrder.orderId
@@ -53,17 +53,17 @@ class OrderService @Inject()(
     * @return the order
     */
   def getOrder(orderId: Int): Order = {
-    val order = orderMapper
+    val order = repo
       .getOrder(orderId)
       .copy(
-        lineItems = lineItemMapper.getLineItemsByOrderId(orderId).asScala
+        lineItems = lineItemRepo.getLineItemsByOrderId(orderId).asScala
       )
 
     val newOrder = order.copy(
       lineItems = order.lineItems.map { lineItem =>
         lineItem.copy(
-          item = itemMapper.getItem(lineItem.itemId).copy(
-            quantity = itemMapper.getInventoryQuantity(lineItem.itemId)
+          item = itemRepo.getItem(lineItem.itemId).copy(
+            quantity = itemRepo.getInventoryQuantity(lineItem.itemId)
           )
         )
       }
@@ -79,7 +79,7 @@ class OrderService @Inject()(
     * @return the orders by username
     */
   def getOrdersByUsername(username: String): Seq[Order] =
-    orderMapper.getOrdersByUsername(username).asScala.map(_.toOrder)
+    repo.getOrdersByUsername(username).asScala.map(_.toOrder)
 
   /**
     * Gets the next id.
@@ -89,14 +89,14 @@ class OrderService @Inject()(
     */
   def getNextId(name: String): Int = {
     var sequence = Sequence(name, -1)
-    sequence = sequenceMapper.getSequence(sequence)
+    sequence = sequenceRepo.getSequence(sequence)
 
     if (sequence == null)
       throw new RuntimeException(
         "Error: A null sequence was returned from the database (could not get next " + name + " sequence).")
 
-    val parameterObject = new Sequence(name, sequence.nextId + 1)
-    sequenceMapper.updateSequence(parameterObject)
+    val parameterObject = Sequence(name, sequence.nextId + 1)
+    sequenceRepo.updateSequence(parameterObject)
     sequence.nextId
   }
 }

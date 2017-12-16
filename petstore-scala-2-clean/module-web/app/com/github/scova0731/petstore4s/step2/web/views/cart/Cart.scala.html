@@ -1,0 +1,95 @@
+@import java.text.DecimalFormat
+@import com.github.scova0731.petstore4s.step2.domain.Account
+@import com.github.scova0731.petstore4s.step2.domain.Cart
+@import com.github.scova0731.petstore4s.step2.domain.Product
+@import com.github.scova0731.petstore4s.step2.web.views.html.cart.IncludeMyList
+@import com.github.scova0731.petstore4s.step2.web.views.html.common.IncludeTop
+@import com.github.scova0731.petstore4s.step2.web.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step2.web.controllers.routes
+
+@(cart: Cart, products: Option[Seq[Product]])(implicit messages: Messages, flash: Flash, account: Option[Account])
+
+@IncludeTop()
+
+
+<div id="BackLink">
+	<a href="@routes.CatalogController.main()">Return to Main Menu</a>
+</div>
+
+<div id="Catalog">
+
+<div id="Cart">
+
+<h2>Shopping Cart</h2>
+@helper.form(action = routes.CartController.updateCartQuantities()) {
+	<table>
+		<tr>
+			<th><b>Item ID</b></th>
+			<th><b>Product ID</b></th>
+			<th><b>Description</b></th>
+			<th><b>In Stock?</b></th>
+			<th><b>Quantity</b></th>
+			<th><b>List Price</b></th>
+			<th><b>Total Cost</b></th>
+			<th>&nbsp;</th>
+		</tr>
+
+		@if(cart.isEmpty) {
+			<tr>
+				<td colspan="8"><b>Your cart is empty.</b></td>
+			</tr>
+		}
+
+		@for((cartItem, i) <- cart.items.zipWithIndex) {
+			<tr>
+				<td>
+					<a href="@routes.CatalogController.viewItem(cartItem.item.itemId)">@cartItem.item.itemId</a>
+				</td>
+				<td>@cartItem.item.product.productId</td>
+				<td>
+					@cartItem.item.attribute1 @cartItem.item.attribute2 @cartItem.item.attribute3
+					@cartItem.item.attribute4 @cartItem.item.attribute5 @cartItem.item.product.name
+				</td>
+				<td>@cartItem.inStock</td>
+				<td>
+					<input type="hidden" name="keys[@(i)]" value="@cartItem.item.itemId" />
+					<input type="text" name="values[@(i)]" value="@cartItem.quantity" size="3" />
+				</td>
+				<td>
+					@(new DecimalFormat("$#,##0.00").format(cartItem.item.listPrice))
+				</td>
+				<td>
+					@(new DecimalFormat("$#,##0.00").format(cartItem.total))
+				</td>
+				<td>
+					<a href="@routes.CartController.removeItemFromCart(cartItem.item.itemId)" class="Button">Remove</a>
+				</td>
+			</tr>
+		}
+		<tr>
+			<td colspan="7">Sub Total:
+				@(new DecimalFormat("$#,##0.00").format(cart.subTotal))
+				<input type="submit" name="updateCartQuantities" value="Update Cart" />
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+	</table>
+}
+
+	@if(cart.nonEmpty) {
+		<a href="@routes.OrderController.newOrderForm()" class="Button">Proceed to Checkout</a>
+	}
+</div>
+
+<div id="MyList">
+	@if(account.isDefined) {
+		@if(account.exists(_.listOption == true)){
+			@IncludeMyList(products)
+		}
+	}
+</div>
+
+<div id="Separator">&nbsp;</div>
+</div>
+
+@IncludeBottom()

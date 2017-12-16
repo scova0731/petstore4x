@@ -6,13 +6,10 @@ lazy val root = (project in file("."))
     name         := "petstore4s-step2",
     organization := "com.github.scova0731.petstore4s.step2",
     scalaVersion := "2.12.4",
-    version      := "0.1.0-SNAPSHOT",
-
-    unmanagedResourceDirectories in Compile += baseDirectory.value / "resources",
-    excludeFilter in Compile in unmanagedResources := "*.sql"
+    version      := "0.1.0-SNAPSHOT"
   )
-  .aggregate(moduleGateway, moduleWeb)
-  .dependsOn(moduleGateway, moduleWeb)
+  .aggregate(moduleDbMyBatis, moduleWeb)
+  .dependsOn(moduleDbMyBatis, moduleWeb)
 
 
 /**
@@ -28,9 +25,9 @@ lazy val moduleCore = (project in file("./module-core"))
 /**
   * Gateway
   */
-lazy val moduleGateway = (project in file("./module-gateway"))
+lazy val moduleDbMyBatis = (project in file("./module-db-mybatis"))
   .settings(
-    name         := "petstore4s-step2-gateway",
+    name         := "petstore4s-step2-db-mybatis",
 
     libraryDependencies += "com.typesafe.play" %% "play-jdbc-api" % "2.6.6" % "provided",
     libraryDependencies += "com.google.inject" % "guice" % "4.1.0",
@@ -40,7 +37,10 @@ lazy val moduleGateway = (project in file("./module-gateway"))
       ExclusionRule(organization = "com.jolbox", name = "bonecp"),
       ExclusionRule(organization = "com.google.inject", name = "guice")
     ),
-    libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
+    libraryDependencies += "com.google.inject" % "guice" % "4.1.0",
+
+    unmanagedResourceDirectories in Compile += baseDirectory.value / "resources",
+    excludeFilter in Compile in unmanagedResources := "*.sql"
   )
   .aggregate(moduleCore)
   .dependsOn(moduleCore)

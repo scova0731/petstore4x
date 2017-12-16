@@ -4,7 +4,7 @@ import javax.inject._
 
 import play.api.mvc._
 
-import com.github.scova0731.petstore4s.step2.views.html
+import com.github.scova0731.petstore4s.step2.web.views.html
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the

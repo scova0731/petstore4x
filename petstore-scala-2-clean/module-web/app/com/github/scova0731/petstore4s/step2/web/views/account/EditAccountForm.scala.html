@@ -1,0 +1,50 @@
+@import com.github.scova0731.petstore4s.step2.domain.Account
+@import com.github.scova0731.petstore4s.step2.web.views.html.account.IncludeAccountFields
+@import com.github.scova0731.petstore4s.step2.web.views.html.common.IncludeTop
+@import com.github.scova0731.petstore4s.step2.web.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step2.web.controllers.routes
+
+@(account: Account)(implicit messages: Messages, flash: Flash)
+
+@IncludeTop()(messages, flash, Some(account))
+
+<div id="Catalog">
+	@helper.form(action = routes.AccountController.editAccount()) {
+
+	<h3>User Information</h3>
+
+	<table>
+		<tr>
+			<td>User ID:</td>
+			<td>
+				<input type="hidden" name="username" value="@account.username">
+				@account.username
+			</td>
+		</tr>
+		<tr>
+			<td>New password:</td>
+			<td>
+				<input type="text" name="password" />
+			</td>
+		</tr>
+		<tr>
+			<td>Repeat password:</td>
+			<td>
+				<input type="text" name="repeatedPassword">
+			</td>
+		</tr>
+	</table>
+
+	@IncludeAccountFields(Some(account))
+
+	@*NOTE Status added by scova0731*@
+	<input type="hidden" name="status" value="UP"/>
+
+	<input type="submit" name="editAccount" value="Save Account Information" />
+
+	}
+	<a href="@routes.OrderController.listOrders()">My Orders</a>
+
+</div>
+
+@IncludeBottom()(messages, flash, Some(account))

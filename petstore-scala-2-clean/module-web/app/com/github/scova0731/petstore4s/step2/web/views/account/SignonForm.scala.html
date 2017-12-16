@@ -1,0 +1,28 @@
+@import com.github.scova0731.petstore4s.step2.web.views.html.common.IncludeTop
+@import com.github.scova0731.petstore4s.step2.web.views.html.common.IncludeBottom
+@import com.github.scova0731.petstore4s.step2.web.controllers.routes
+
+@()(implicit messages: Messages, flash: Flash)
+
+@IncludeTop()(messages, flash, None)
+
+<div id="Catalog">
+	@helper.form(action = routes.AccountController.signon()) {
+
+		<p>Please enter your username and password.</p>
+		<p>
+			Username:
+			<input type="text" name="username" value="j2ee"/>
+			<br />
+			Password:
+			<input type="password" name="password" value="j2ee" />
+		</p>
+		<input type="submit" name="signon" value="Login" />
+
+	}
+	Need a user name and password?
+	<a href="@routes.AccountController.newAccountForm()">Register Now!</a>
+</div>
+
+@IncludeBottom()(messages, flash, None)
+

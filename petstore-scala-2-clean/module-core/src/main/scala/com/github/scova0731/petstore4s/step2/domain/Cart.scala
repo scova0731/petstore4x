@@ -11,8 +11,8 @@ case class Cart(
   items: Seq[CartItem] = Seq.empty
 ) {
 
-  val isEmpty = items.isEmpty
-  val nonEmpty = items.nonEmpty
+  val isEmpty: Boolean = items.isEmpty
+  val nonEmpty: Boolean = items.nonEmpty
 
   def containsItemId(itemId: String): Boolean =
     items.exists(_.item.itemId == itemId)

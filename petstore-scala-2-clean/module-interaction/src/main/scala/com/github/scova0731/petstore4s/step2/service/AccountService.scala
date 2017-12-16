@@ -3,17 +3,17 @@ package com.github.scova0731.petstore4s.step2.service
 import javax.inject.Inject
 
 import com.github.scova0731.petstore4s.step2.domain.Account
-import com.github.scova0731.petstore4s.step2.mapper.AccountMapper
+import com.github.scova0731.petstore4s.step2.repository.AccountRepository
 
 class AccountService @Inject()(
-  accountMapper: AccountMapper
+  repo: AccountRepository
 ) {
 
   def getAccount(username: String): Account =
-    accountMapper.getAccountByUsername(username)
+    repo.getAccountByUsername(username)
 
   def getAccount(username: String, password: String): Option[Account] =
-    Option(accountMapper.getAccountByUsernameAndPassword(username, password))
+    Option(repo.getAccountByUsernameAndPassword(username, password))
 
   /**
     * Insert account.
@@ -21,9 +21,9 @@ class AccountService @Inject()(
     * @param account the account
     */
   def insertAccount(account: Account): Unit = {
-    accountMapper.insertAccount(account)
-    accountMapper.insertProfile(account)
-    accountMapper.insertSignon(account)
+    repo.insertAccount(account)
+    repo.insertProfile(account)
+    repo.insertSignon(account)
   }
 
   /**
@@ -32,9 +32,9 @@ class AccountService @Inject()(
     * @param account the account
     */
   def updateAccount(account: Account): Unit = {
-    accountMapper.updateAccount(account)
-    accountMapper.updateProfile(account)
+    repo.updateAccount(account)
+    repo.updateProfile(account)
     if (!account.isPasswordEmpty)
-      accountMapper.updateSignon(account)
+      repo.updateSignon(account)
   }
 }

@@ -1,8 +1,19 @@
 petstore4s / clean-architecture version
 ===============================================
 
+## ToDo
 
-
+- [x] リネーム
+  view -> web.view
+  action -> controllers
+  mapper -> repository
+- [ ] 変数もリネーム
+- [ ] domain モデルの再考
+- [ ] Controllerから処理を剥がしてサービスへ移動 
+- [ ] Quill版
+- [ ] Presenterの分離
+- [ ] 用語を寄せるか、オリジナルで行くか 
+- [ ] テストを追加
 
 # バリエーション
 
